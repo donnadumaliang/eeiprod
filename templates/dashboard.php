@@ -17,7 +17,7 @@
       </div>
       </div>
     <div class="modal-footer">
-      <input class="modal-action modal-close" id="cancel" value="Cancel">
+      <input class="modal-action modal-close" type="submit" id="cancel" value="Cancel">
       <input id="return" name="submit" type="submit" value="Create">
       <!-- <button class="btn modal-close" id="" type="submit" name="submit">Create</button> -->
       <!-- <a href="home.php" class="btn modal-action modal-close">Close</a> -->
@@ -94,7 +94,8 @@
                           <p class='unassigned' id="sev">Unassigned</p>
                           <p id='sevlevel' class='no-margin'>For review </p>
                         </div>
-                        <?php $totalunassigned = "SELECT COUNT(*) as unassigned, (SELECT COUNT(*) FROM ticket_t t WHERE t.ticket_status >= 5 and t.ticket_status <=8) as totaltickets FROM ticket_t t WHERE t.severity_level IS NULL AND t.ticket_status >= 5 and t.ticket_status <=8";
+                        <?php $totalunassigned = "SELECT COUNT(*) as unassigned, (SELECT COUNT(*) FROM ticket_t t WHERE t.ticket_status >= 5 and t.ticket_status <=8 OR (t.ticket_status = 1 AND t.ticket_type='Service') OR (t.ticket_status=3 AND t.ticket_type='User Access')) as totaltickets FROM ticket_t t WHERE(t.ticket_status = 1 AND t.ticket_type = 'Service') OR (t.ticket_status = 3 AND t.ticket_type='User Access')";?>
+                        <?php
                         $result2 = mysqli_query($db,$totalunassigned);
                         while($row2 = mysqli_fetch_assoc($result2)){ ?>
 

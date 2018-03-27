@@ -166,8 +166,8 @@ $(document).ready(function(){
     <!-- End of preloader -->
         <div class="row">
           <!-- Start of LEFT column -->
+          <h6 id="ticket-forms">Requestor Details</h6>
           <div class="col s12 m12 l6" id="form">
-            <h6>Requestor Details</h6>
             <div class="col s12 m12 l6">
               <div class="row" id="request-form-row4">
                 <div class="col s12">
@@ -210,7 +210,8 @@ $(document).ready(function(){
 
           <!-- Start of RIGHT column -->
           <div class="col s12 m12 l6" id="form">
-            <div class="row" id="request-form-row">
+            <br>
+            <div class="row" id="request-form-row7">
               <div class="col s12 l12">
                 <div class="input-field" id="request-form">
                   <input placeholder=" " class="title" name="title" type="text" data-length="40" required>
@@ -218,28 +219,39 @@ $(document).ready(function(){
                 </div>
               </div>
             </div>
-              <br>
-            <h6>Reviewed By:</h6>
-            <div class="col s12 m12 l12">
-              <div class="row" id="request-form-row4">
-                  <div class="input-field search-box" id="request-form" tabindex="-1">
-                    <input class="tooltipped" data-position="left" data-delay="50" data-tooltip="Assistant PM (if applicable)" placeholder=" " name="checker" autocomplete="off" type="text" validate>
-                    <div class="result"></div>
-                      <label for="approver">Checker *<i>optional</i></label>
-                  </div>
-              </div>
-            </div>
-            <div class="col s12 m12 l12">
-              <div class="row" id="request-form-row3">
-                  <div class="input-field search-box" id="request-form" tabindex="-1">
-                    <input class="tooltipped" data-position="left" data-delay="50" data-tooltip="Direct Supervisor, PM or PIC" placeholder="Department's or Group's PM or Person-In-Charge" name="approver" autocomplete="off" type="text" required>
-                    <div class="result"></div>
-                    <label for="approver">Approver *<i>optional</i></label>
-                  </div>
+            <div class="row" id="request-form-row7">
+              <div class="col s12 l12">
+                <div class="input-field" id="request-form-row9">
+                  <input placeholder=" " class="title" name="expdate" type="date" required>
+                  <label for="expdate" style="font-size:12px">Expiry Date</label>
+                </div>
               </div>
             </div>
           </div>
+          <br>
         </div>
+          <h6 id="ticket-forms">Reviewed By:</h6>
+          <div class="row col l12">
+              <div class="col s12 m12 l6" id="form">
+                <div class="row" id="request-form-row4">
+                    <div class="input-field search-box" id="request-form" tabindex="-1">
+                      <input class="tooltipped" data-position="top" data-delay="50" data-tooltip="Assistant PM (if applicable)" placeholder=" " name="checker" autocomplete="off" type="text" validate>
+                      <div class="result"></div>
+                        <label for="approver">Checker *<i>optional</i></label>
+                    </div>
+                </div>
+              </div>
+              <div class="col s12 m12 l6" id="form">
+                <div class="row" id="request-form-row4">
+                  <div class="input-field search-box" id="request-form" tabindex="-1">
+                    <input class="tooltipped" data-position="top" data-delay="50" data-tooltip="Direct Supervisor, PM or PIC" placeholder="Department's or Group's PM or Person-In-Charge" name="approver" autocomplete="off" type="text" required>
+                    <div class="result"></div>
+                    <label for="approver">Approver *<i>optional</i></label>
+                  </div>
+                </div>
+              </div>
+          </div>
+
         <div class="col s12 m12 l12" id="form">
           <span id="rdetails"><h6>Request Details</h6>
           </span>

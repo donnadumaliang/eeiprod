@@ -36,7 +36,6 @@
       <div class="profile-body">
           <h5 class="body-header"><?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name'] ?></h5>
           <h6 class="body-header" id="line2"><?php echo $_SESSION['user_type'] ?></h6>
-          <hr>
           <br>
           <table id="profile">
             <tbody>

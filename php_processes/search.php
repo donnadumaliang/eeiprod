@@ -12,7 +12,7 @@ if($db === false){
 
 if(isset($_REQUEST['term'])){
     // Prepare a select statement
-    $sql = "SELECT * FROM user_t WHERE CONCAT(first_name,last_name) LIKE ?";
+    $sql = "SELECT * FROM user_t WHERE CONCAT(first_name,' ',last_name) LIKE ?";
 
     if($stmt = $db->prepare($sql)){
         // Bind variables to the prepared statement as parameters

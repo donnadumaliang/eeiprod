@@ -10,14 +10,7 @@ $dp = mysqli_real_escape_string($db, $_POST['dp']);
 $rc = mysqli_real_escape_string($db, $_POST['rc_no']);
 $checker = mysqli_real_escape_string($db, $_POST['checker']);
 $approver = mysqli_real_escape_string($db, $_POST['approver']);
-
-//email notif to checker
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require '../PHPMailer-master/src/Exception.php';
-require '../PHPMailer-master/src/PHPMailer.php';
-require '../PHPMailer-master/src/SMTP.php';
+$expdate = mysqli_real_escape_string($db, $_POST['expdate']);
 
 $query5= "SELECT user_id from user_t WHERE CONCAT(first_name,' ',last_name)='$approver'";
 $result2=mysqli_query($db, $query5);
@@ -39,7 +32,6 @@ $approverEmail = $row4['email_address'];
 $requestorname = $_SESSION['first_name'];
 $requestorname .= " ";
 $requestorname .= $_SESSION['last_name'];
-$mail = new PHPMailer(true);
 
 
 if($checker!= NULL ){
@@ -58,41 +50,7 @@ if($checker!= NULL ){
       }
       //end of checker
 
-      $mail->isSMTP();
-      $mail->getSMTPInstance()->Timelimit = 10;
-      $mail->Host = "smtp.gmail.com";  // Specify main and backup SMTP servers
-      $mail->SMTPAuth = true;                               // Enable SMTP authentication
-      $mail->Username = "eeiserviceteam@gmail.com";                 // SMTP username
-      $mail->Password = "service@EEI1";                             // SMTP password
-      $mail->Port = 587;
-      $mail->Timeout = 1;                                  // TCP port to connect to
-      $mail->SMTPSecure = "tls";
 
-      //Recipients
-      $mail->setFrom("eeiserviceteam@gmail.com", "EEI Service Desk Team");
-      $mail->addAddress($checkerEmail, $checker);     // Add a recipient
-      $mail->addReplyTo("dondumaliang@gmail.com", "Donna Dumaliang");
-
-      //Attachments
-      //Content
-      $mail->isHTML(true);                                  // Set email format to HTML
-      $mail->Subject = "Access Request for Review";
-      $mail->AddEmbeddedImage('../img/email-header.png', 'email-header');    //Content
-      $mail->Body = "<div style=\"background-color: #f5f5f5; padding: 50px\">" .
-
-      "<img style=\"display: block;  margin: 0 auto;\" src=\"cid:email-header\">" .
-
-        "<div style=\"background-color: white; height: max-content; margin: 0 auto; width: 662px; padding: 30px 40px 30px 40px; font-size: 14px; box-shadow: 0 2px 2px 0 rgba(66, 66, 66, 0.14), 0 1px 5px 0 rgba(134, 134, 134, 0), 0 3px 1px -2px rgba(134,135, 134, 0.2);\">" .
-
-        "Hi <b>" . $checker . "</b>," . "<br><br>" .
-
-         "$requestorname is requesting for access in " . $dp. " project/department." . "<br><br> As the checker assigned, kindly view and check the access request details through the EEI Service Desk website" .
-
-        "<br><br><a style=\"background-color: #4b75ff; padding: 13px; color:white; border-radius: 3px; display: block; width: 26%; text-decoration: none; margin: 0 auto;\" href=\"http://localhost/eeiproduction/\">Click here to go to website" . "</a><br><br>--<br><b>IT Service Desk Team</b>" . "</div></div>" .
-
-        "<div style=\"background-color: #2d3033; font-size: 11px; padding: 20px 0px; color:white; text-align: center;\">Copyright &copy; 2018 EEI Corporation | No. 12 Manggahan street, Libis, Quezon City 1101 Metro Manila.</div>";
-
-      $mail->send();
 
 
       date_default_timezone_set('Asia/Manila');
@@ -143,7 +101,7 @@ if($checker!= NULL ){
       }
 
 
-      $query3 = "INSERT INTO user_access_ticket_t (ticket_id, company, dept_proj, rc_no, approver, checker) VALUES('$latest_id', '$company', '$dp', '$rc', '$approverID', '$checkerID')";
+      $query3 = "INSERT INTO user_access_ticket_t (ticket_id, company, dept_proj, expiry_date, rc_no, approver, checker) VALUES('$latest_id', '$company', '$dp', '$expdate', '$rc', '$approverID', '$checkerID')";
 
       if (!mysqli_query($db, $query3))
       {
@@ -201,42 +159,7 @@ if($checker!= NULL ){
   } else{
   try{                           // Passing `true` enables exceptions
       //Server settings
-      $mail->isSMTP();
-      $mail->getSMTPInstance()->Timelimit = 10;
-      $mail->Host = "smtp.gmail.com";  // Specify main and backup SMTP servers
-      $mail->SMTPAuth = true;                               // Enable SMTP authentication
-           $mail->Username = "eeiserviceteam@gmail.com";                 // SMTP username
-      $mail->Password = "service@EEI1";                           // SMTP password
-      $mail->Port = 587;
-      $mail->Timeout = 1;                                  // TCP port to connect to
-      $mail->SMTPSecure = "tls";
 
-      //Recipients
-      $mail->setFrom("dondumaliang@gmail.com", "Donna Dumaliang");
-      $mail->addAddress($approverEmail, $approver);     // Add a recipient
-      $mail->addReplyTo("dondumaliang@gmail.com", "Donna Dumaliang");
-
-      //Attachments
-
-      //Content
-      $mail->isHTML(true);                                  // Set email format to HTML
-      $mail->Subject = "Access Request for Review";
-      $mail->AddEmbeddedImage('../img/email-header.png', 'email-header');    //Content
-  		$mail->Body = "<div style=\"background-color: #f5f5f5; padding: 50px\">" .
-
-      "<img style=\"display: block;  margin: 0 auto;\" src=\"cid:email-header\">" .
-
-        "<div style=\"background-color: white; height: max-content; margin: 0 auto; width: 662px; padding: 30px 40px 30px 40px; font-size: 14px; box-shadow: 0 2px 2px 0 rgba(66, 66, 66, 0.14), 0 1px 5px 0 rgba(134, 134, 134, 0), 0 3px 1px -2px rgba(134,135, 134, 0.2);\">" .
-
-        "Hi <b>" . $approver . "</b>," . "<br><br>" .
-
-         "$requestorname is requesting for access in " . $dp. " project/department." . "<br><br> As the approver assigned, kindly view and check the access request details through the EEI Service Desk website" .
-
-        "<br><br><a style=\"background-color: #4b75ff; padding: 13px; color:white; border-radius: 3px; display: block; width: 26%; text-decoration: none; margin: 0 auto;\" href=\"http://localhost/eeiproduction\">Click here to go to website" . "</a><br><br>--<br><b>IT Service Desk Team</b>" . "</div></div>" .
-
-        "<div style=\"background-color: #2d3033; font-size: 11px; padding: 20px 0px; color:white; text-align: center;\">Copyright &copy; 2018 EEI Corporation | No. 12 Manggahan street, Libis, Quezon City 1101 Metro Manila.</div>";
-
-      $mail->send();
 
       date_default_timezone_set('Asia/Manila');
       //time
@@ -279,7 +202,7 @@ if($checker!= NULL ){
       }
 
 
-      $query3 = "INSERT INTO user_access_ticket_t (ticket_id, company, dept_proj, rc_no, approver) VALUES('$latest_id', '$company', '$dp', '$rc', '$approverID')";
+      $query3 = "INSERT INTO user_access_ticket_t (ticket_id, company, dept_proj, expiry_date, rc_no, approver) VALUES('$latest_id', '$company', '$dp', '$expdate', '$rc', '$approverID')";
 
       if (!mysqli_query($db, $query3))
       {

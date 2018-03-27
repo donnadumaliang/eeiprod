@@ -268,8 +268,6 @@ $(document).ready(function(){
     dangerMode: true,
     }).then((willSubmit) => {
       if(willSubmit){
-        $('.preloader-wrapper').show();
-        $('.preloader-background').show();
         $.ajax({
           url: 'php_processes/new-requestor.php',
           type: 'POST',
@@ -287,7 +285,6 @@ $(document).ready(function(){
               });
            },
            complete: function(){
-             $('.preloader-wrapper').hide();
            }
         })
       }else {
@@ -405,8 +402,6 @@ $(document).ready(function(){
       dangerMode: true,
       }).then((willSubmit) => {
         if(willSubmit){
-          $('.preloader-wrapper').show();
-          $('.preloader-background').show();
           $.ajax({
             url: 'php_processes/access_ticket_process.php',
             type: 'POST',
@@ -576,7 +571,7 @@ $(document).ready(function(){
             type: "success",
             icon: "success"
         }).then(function(){
-          location.reload();
+          window.location = "review-incoming-tickets.php"
         });
       }
    })
@@ -635,8 +630,6 @@ $(document).ready(function(){
      dangerMode: true,
    }).then((willDelete) => {
      if(willDelete){
-       $('.preloader-wrapper').show();
-       $('.preloader-background').show();
        $.ajax({
          url: 'php_processes/check-process.php',
          type: 'POST',

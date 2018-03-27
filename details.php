@@ -85,7 +85,7 @@
                    <?php }?>
 
                    <!-- Return Button for Ticket Agents -->
-                   <?php if (($row['ticket_status'] < 7) AND ($_SESSION['user_type']=="Technician" OR $_SESSION['user_type']=="Network Engineer") AND (($id != $row['checker'] AND $row['isChecked'] != NULL) OR ($id != $row['approver'] AND $row['isApproved'] != NULL))) {?>
+                   <?php if (($row['ticket_status'] < 7) AND ($_SESSION['user_type']=="Technician" OR $_SESSION['user_type']=="Network Engineer")) {?>
                        <input id="return" type="submit" class="modal-trigger" href="#returnsupervisor" value="Return to Supervisor" />
                    <?php  }?>
 
@@ -97,7 +97,7 @@
 
                   <!-- Approve, Check and Reject Button for Approver/Checker  -->
                   <div class="approve-reject">
-                     <?php if ($row['approver']==$id  && $row['isApproved'] != 1) { ?>
+                     <?php if ($row['approver']==$id  && $row['isApproved'] != 1 && ($row['isChecked'] == 1 OR $row['checker'] == NULL)) { ?>
                          <form id="approve" name="approve" method="post">
                            <input id="approve" type="submit" value="Approve">
                            <input  id="approve" name = "ticketID" type="hidden" value="<?php echo $ticketID?>">
@@ -217,7 +217,7 @@
             <div class="col s12 m12 l12">
               <div class="row" id="ticket-details">
                 <div class="col s12 m12 l7">
-                  <div class="card-panel">
+                  <div class="card-panel" id="tdetails">
                     <span class="black-text">
                       <?php
                         $db = mysqli_connect("localhost", "root", "", "eei_db");
@@ -256,7 +256,8 @@
                                "<p id=\"requestor_details\">" . "<style=\"color:blue\">" . "<span class=\"name-in-ticket tooltipped\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"$email\">" . $row['requestor'] . "</span>" . "<span class=\"request_date\">" . " reported on " . $row['date_prepared'] . "</p>" .
                                    "<tr><td>" . "R.C. Number:" . "</td><td>"  .  $row['rc_no'] . "</td>" .
                                     "<tr><td>" . "Company:" . "</td><td>"  .  $row['company'] . "</td>" .
-                                    "<tr><td>" . "Department/Project:" . "</td><td>"  .  $row['dept_proj'] . "</td>" ; } ?>
+                                    "<tr><td>" . "Department/Project:" . "</td><td>"  .  $row['dept_proj'] . "</td>" .
+                                    "<tr><td>" . "Expiry Date:" . "</td><td>"  .  $row['expiry_date'] . "</td>"; } ?>
                             <?php
                             $query0 = "SELECT ticket_type FROM ticket_t WHERE ticket_id = '".$_GET['id']."'";
                             $row0=mysqli_fetch_array(mysqli_query($db, $query0),MYSQLI_ASSOC);
@@ -628,9 +629,7 @@
                             <div class="col s12 m12 l12 properties-box" id="properties-box">
                               <div class="input-field ticket-properties" id="request-form-row6">
                                 <?php
-                                  $db = mysqli_connect("localhost", "root", "", "eei_db");
-?>
-
+                                  $db = mysqli_connect("localhost", "root", "", "eei_db");?>
                                   <?php $retrieve = mysqli_query($db, "SELECT * FROM ticket_t LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level WHERE ticket_id = '".$_GET['id']."'");
                                   $row = mysqli_fetch_array($retrieve);?>
 
@@ -684,21 +683,14 @@
                                   </select>
                                   <label for="title">Ticket Category</label>
                               </div>
+                              
                               <div class="input-field ticket-properties" id="request-form-row6">
                                   <?php
-                                    $db = mysqli_connect("localhost", "root", "", "eei_db");
-?>
-
+                                    $db = mysqli_connect("localhost", "root", "", "eei_db");?>
                                     <?php $retrieve = mysqli_query($db, "SELECT * FROM ticket_t LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level WHERE ticket_id = '".$_GET['id']."'");
                                     $row = mysqli_fetch_array($retrieve);?>
-
-                                    <?php
-                                      $db = mysqli_connect("localhost", "root", "", "eei_db");
-
-
-
-                                      ?>
-                                      <select name='severity'>
+											<select name='severity'>
+	
                                         <option value = "<?php echo $row['id']?>"  selected><?php echo $row['severity_level']?></option>
                                       <?php
                                        $get_sevlvl = "SELECT * FROM sla_t";

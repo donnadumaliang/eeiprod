@@ -10,6 +10,10 @@
         url(../fonts/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
 }
 
+div#tdetails{
+  overflow-y: scroll;
+  max-height: 500px;
+}
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -1073,6 +1077,17 @@ div#request-form-row6 {
     margin-top: 25px;
 }
 
+div#request-form-row7{
+  margin-top: -12px;
+}
+
+div#request-form-row9 {
+    margin-top: -7px;
+}
+h6#ticket-forms{
+  margin-left: 18px;
+margin-top: 20px;
+}
 div#assign{
   padding: 5px;
 }
@@ -2889,7 +2904,11 @@ p#edit-subheader{
 font-size: 16px;
 margin-top: 0px;
 }
-
+input#fp-save, input#fp-save:hover{
+  margin-right: 20px!important;
+  border: 1px solid #3757bf!important;
+  padding: 0px 20px;
+}
 .button-edit{
     background-color: #FFC107;
     border: 1px solid #e1ad0e;

@@ -50,7 +50,7 @@ $result = mysqli_query($db,$query);
   }
 $row2++;
 }
-$query = "SELECT COUNT(*) as unassigned, (SELECT COUNT(*) FROM ticket_t t WHERE t.ticket_status >= 5 and t.ticket_status <=8) as totaltickets FROM ticket_t t WHERE t.severity_level IS NULL";
+$query = "SELECT COUNT(*) as unassigned, (SELECT COUNT(*) FROM ticket_t t WHERE t.ticket_status >= 5 and t.ticket_status <=8 OR (t.ticket_status = 1 AND t.ticket_type='Service') OR (t.ticket_status=3 AND t.ticket_type='User Access')) as totaltickets FROM ticket_t t WHERE(t.ticket_status = 1 AND t.ticket_type = 'Service') OR (t.ticket_status = 3 AND t.ticket_type='User Access')";
 $result = mysqli_query($db,$query);
 
   while($row_data = mysqli_fetch_assoc($result)){
