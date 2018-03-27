@@ -79,10 +79,10 @@
           </div>
         </form>
       </div>
-        <?php include 'templates/ticketforms.php'; ?>
-        <?php include 'templates/js_resources.php' ?>
-
       </div>
+      <?php include 'templates/ticketforms.php'; ?>
+      <?php include 'templates/js_resources.php' ?>
+
 
     </div>
     <script>

@@ -1896,6 +1896,7 @@ div.result{
     z-index: 999;
     top: 100%;
     left: 0;
+    font-size: 12px;
     background-color: white;
     overflow-y: auto;
     max-height:100px;
@@ -2418,6 +2419,11 @@ div.count{
   margin-top: 15px;
 }
 
+i#back{
+  color: lightgrey;
+font-size: 2rem;
+margin-right: 5px;
+}
 div#ticket-forms{
 background-color: white;
 padding: 25px;
@@ -2432,6 +2438,7 @@ div#service, div#access, div#requestor, div#batch{
   display: block;
   background-color: white;
   padding: 25px;
+  height: 100vh;
 }
 .dropdown3content{
   width:300px !important;
@@ -2907,8 +2914,4 @@ span#actions{
     margin-top: 15px;
     margin-right: 20px;
     display: -webkit-inline-box;
-}
-
-div:focus{
-  outline: none;
 }

@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-              <input class="modal-action modal-close btn-flat" id="request-form-row" name="submit" type="submit" value="Save">
+              <input class="modal-action modal-close btn-flat white-text" id="request-form-row" name="submit" type="submit" value="Save">
             </div>
           </form>
           </div>

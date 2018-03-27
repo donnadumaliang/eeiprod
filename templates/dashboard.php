@@ -17,7 +17,7 @@
       </div>
       </div>
     <div class="modal-footer">
-      <input class="modal-action modal-close" id="cancel" name="submit" type="submit" value="Cancel">
+      <input class="modal-action modal-close" id="cancel" value="Cancel">
       <input id="return" name="submit" type="submit" value="Create">
       <!-- <button class="btn modal-close" id="" type="submit" name="submit">Create</button> -->
       <!-- <a href="home.php" class="btn modal-action modal-close">Close</a> -->

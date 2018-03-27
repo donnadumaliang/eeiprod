@@ -30,18 +30,6 @@ $result = mysqli_query($db, $query);
 //
 // }
 
-//date required
-$datePrepared = "SELECT date_assigned FROM ticket_t WHERE ticket_id = $id";
-$row4 =mysqli_fetch_array(mysqli_query($db, $datePrepared),MYSQLI_ASSOC);
-$datePrepared = $row4['date_assigned'];
-$date = $datePrepared;
-
-$sql = "SELECT resolution_time FROM sla_t WHERE id = '$severity'";
-$row3 = mysqli_fetch_array(mysqli_query($db, $sql),MYSQLI_ASSOC);
-$interval = $row3['resolution_time'];
-
-$dateRequired = "UPDATE ticket_t set date_required = DATE_ADD('$date', INTERVAL $interval  HOUR) WHERE ticket_id = $id";
-$run = mysqli_query($db, $dateRequired);
 
 if ($category=='Technicals') {
     $query3 = "SELECT user_id, CONCAT(first_name, ' ', last_name) as mgr from user_t where user_type = 'Technicals Group Manager'";
@@ -101,6 +89,79 @@ if (!mysqli_query($db, $notifSql))
 {
   die('Error' . mysqli_error($db));
 }
+
+//date required
+$datePrepared = "SELECT date_assigned FROM ticket_t WHERE ticket_id = $id";
+$row4 =mysqli_fetch_array(mysqli_query($db, $datePrepared),MYSQLI_ASSOC);
+$datePrepared = $row4['date_assigned'];
+$date = $datePrepared;
+
+$sql = "SELECT resolution_time FROM sla_t WHERE id = '$severity'";
+$row3 = mysqli_fetch_array(mysqli_query($db, $sql),MYSQLI_ASSOC);
+$interval = $row3['resolution_time'];
+
+function addRollover($givenDate, $addtime, $dayStart, $dayEnd, $weekDaysOnly) {
+    //Break the working day start and end times into hours, minuets
+    $dayStart = explode(',', $dayStart);
+    $dayEnd = explode(',', $dayEnd);
+    //Create required datetime objects and hours interval
+    $datetime = new DateTime($givenDate);
+    $endofday = clone $datetime;
+    $endofday->setTime($dayEnd[0], $dayEnd[1]); //set end of working day time
+    $interval = 'PT'.$addtime.'H';
+    //Add hours onto initial given date
+    $datetime->add(new DateInterval($interval));
+    //if initial date + hours is after the end of working day
+    if($datetime > $endofday)
+    {
+        //get the difference between the initial date + interval and the end of working day in seconds
+        $seconds = $datetime->getTimestamp()- $endofday->getTimestamp();
+
+        //Loop to next day
+        while(true)
+        {
+            $endofday->add(new DateInterval('PT24H'));//Loop to next day by adding 24hrs
+            $nextDay = $endofday->setTime($dayStart[0], $dayStart[1]);//Set day to working day start time
+            //If the next day is on a weekend and the week day only param is true continue to add days
+            if(in_array($nextDay->format('l'), array('Sunday','Saturday')) && $weekDaysOnly)
+            {
+                continue;
+            }
+            else //If not a weekend
+            {
+                $tmpDate = clone $nextDay;
+                $tmpDate->setTime($dayEnd[0], $dayEnd[1]);//clone the next day and set time to working day end time
+                $nextDay->add(new DateInterval('PT'.$seconds.'S')); //add the seconds onto the next day
+                //if the next day time is later than the end of the working day continue loop
+                if($nextDay > $tmpDate)
+                {
+                    $seconds = $nextDay->getTimestamp()-$tmpDate->getTimestamp();
+                    $endofday = clone $tmpDate;
+                    $endofday->setTime($dayStart[0], $dayStart[1]);
+                }
+                else //else return the new date.
+                {
+                    return $endofday;
+
+                }
+            }
+        }
+    }
+    return $datetime;
+}
+
+date_default_timezone_set('Asia/Manila');
+
+$currentTime = date('Y-m-d H:i:s');
+
+$dayStart = '8,00';
+$dayEnd = '17,00';
+
+$future = addRollover($currentTime, $interval, $dayStart, $dayEnd, true);
+$date_required = $future->format('Y-m-d H:i:s');
+
+$dateRequired = "UPDATE ticket_t set date_required = '$date_required' WHERE ticket_id = $id";
+$run = mysqli_query($db, $dateRequired);
 
 
 //for swal Display
