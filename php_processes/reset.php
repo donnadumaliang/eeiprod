@@ -17,7 +17,7 @@
           $email=$row['email_address'];
           echo json_encode($token);
 
-        $query2 = "UPDATE user_t SET password = MD5('$password') WHERE email_address = '$email'";
+        $query2 = "UPDATE user_t SET password = MD5('$newpass') WHERE email_address = '$email'";
         if (!mysqli_query($db, $query2))
         {
           die('Error' . mysqli_error($db));
@@ -28,7 +28,7 @@
         {
           die('Error' . mysqli_error($db));
         }
-      } else{ ?>
+      } }else{ ?>
         <script>
           alert("Passwords not matching");
         </script>

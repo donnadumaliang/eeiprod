@@ -10,19 +10,8 @@ $id = mysqli_real_escape_string($db, $_POST['id']);
 $logger = $_SESSION['user_id'];
 // $ticketID = mysqli_real_escape_string($db, $_POST['ticketID']);
 
-$query = "UPDATE ticket_t SET it_group_manager_id = NULL WHERE ticket_id = '$id'";
-if (!mysqli_query($db, $query))
-{
-  die('Error' . mysqli_error($db));
-}
 
-$query = "UPDATE ticket_t SET ticket_category = NULL WHERE ticket_id = '$id'";
-if (!mysqli_query($db, $query))
-{
-  die('Error' . mysqli_error($db));
-}
-
-$query = "UPDATE ticket_t SET remarks='Ticket returned' WHERE ticket_id = '$id'";
+$query = "UPDATE ticket_t SET ticket_category = NULL, remarks='Ticket returned' WHERE ticket_id = '$id'";
 if (!mysqli_query($db, $query))
 {
   die('Error' . mysqli_error($db));

@@ -7,6 +7,7 @@ $(document).ready(function(){
   $(".clickable-row").click(function() {
       window.location = $(this).data("href");
   });
+
   $('.datepicker').pickadate({
    selectMonths: true, // Creates a dropdown to control month
    selectYears: 15, // Creates a dropdown of 15 years to control year,
@@ -16,6 +17,21 @@ $(document).ready(function(){
    closeOnSelect: false // Close upon selecting a date,
  });
 
+//datepicker alternative for safari
+$("#expdate").keyup(function(){
+  if ($(this).val().length == 4){
+      $(this).val($(this).val() + "-");
+  }else if ($(this).val().length == 7){
+      $(this).val($(this).val() + "-");
+  }
+});
+
+
+
+ var today = new Date().toISOString().split('T')[0];
+ document.getElementsByName("expdate")[0].setAttribute('min', today);
+
+ $("#notif").delay(700).fadeIn(500);
 ///////////////////////////////////////////// GENERAL ///////////////////////////////////////////////////////
   //Setting Active Link on Current Page
   var path = window.location.pathname.split("/").pop();  // Get current path and find target link
@@ -35,6 +51,7 @@ $(document).ready(function(){
   if(window.location.href.indexOf("my") != -1) {
     $('#my-auto-down.collapsible').collapsible('open', 0);
   }
+
 
   //Set current date for Date Prepared in forms
   var now = new Date();
@@ -57,30 +74,16 @@ $(document).ready(function(){
             this.value = this.value.substring(0, max);
         }
     });
-
-    $('#rc_no').keypress(function(e) {
-      var max = 5;
-
-          if (e.which < 0x20) {
-              return;     // Do nothing
-          }
-          if (this.value.length == max) {
-              e.preventDefault();
-          } else if (this.value.length > max) {
-              this.value = this.value.substring(0, max);
-          }
-      });
-
+$("select[required]").css({display: "inherit", height: 0, padding: 0, width: 0});
   //Export Report to Excel
   $('#request-form-export').click(function(){
      window.location="php_processes/export.php";
   });
 
-  $('#btn-cancel').click(function(e){
-    e.preventDefault();
-    window.location.reload();
-  });
-
+  $('.btn-cancel').click(function(e){
+     e.preventDefault();
+     window.location.reload();
+   });
   //Hiding Red Notification Count on Bell Click
   $('.notifications').click(function(){
     $("#notification_count").hide();
@@ -90,16 +93,95 @@ $(document).ready(function(){
 
   //Required activity log for Resolved status
   $('select[name=status]').change(function () {
-      if ($(this).val() == '7') {
-          $('.al').show();
-          $('.al').prop('required',true);
-      }
-      else{
-        $('.al').hide();
-        $('.al').prop('required',false);
-      }
-  });
+        if ($(this).val() == '7') {
+            $('.al').show();
+            $('#al').prop('required',true);
+        }
+        else{
+          $('.al').hide();
+          $('#al').prop('required',false);
+        }
+    });
+//dashboard donut category
+    $.ajax({
+      url: "donut.php",
+      method: "GET",
+      success: function(data) {
+        console.log(data);
+        var count = [];
+        var category = [];
+        for(var i in data) {
+          category.push(data[i].category);
+          count.push(data[i].count);
+        }
+        var chartdata = {
+          labels: category,
+          datasets : [
+            {
+              label: 'Ticket Count',
+              backgroundColor: ['#d6624e', '#f6d45d', '#5594d6'],
+              borderColor: 'rgba(200, 200, 200, 0.75)',
+              hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
+              hoverBorderColor: 'rgba(200, 200, 200, 1)',
+              data: count
+            }
+          ]
+        };
+        var ctx2 = $("#mycanvas2");
+        var barGraph = new Chart(ctx2, {
+          type: 'doughnut',
+          data: chartdata,
 
+        });
+      },
+      error: function(data) {
+        console.log(data);
+      }
+    });
+    //dashboard donut sla
+    var sum=0;
+        $.ajax({
+          url: "sladonut.php",
+          method: "GET",
+          success: function(data) {
+            console.log(data);
+            var count = [];
+            var sla = [];
+            for(var i in data) {
+              sla.push(data[i].sla);
+              count.push(data[i].count);
+              sum = sum + data[i].count;
+            }
+            var chartdata = {
+              labels: sla,
+              datasets : [
+                {
+                  label: 'Ticket Count',
+                  backgroundColor: ['#DC3732', '#ee963b', '#ebc447','#60ca59','#3275b8'],
+                  borderColor: 'rgba(200, 200, 200, 0.75)',
+                  hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
+                  hoverBorderColor: 'rgba(200, 200, 200, 1)',
+                  data: count
+                }
+              ]
+            };
+            if (sum>0) {
+              var ctx3 = $("#mycanvas3");
+              var barGraph = new Chart(ctx3, {
+                type: 'doughnut',
+                data: chartdata,
+
+              });
+            }
+            else {
+               $(".overdue").hide();
+            }
+
+          },
+          error: function(data) {
+            console.log(data);
+          }
+        });
   //Dashboard Bar Graph
   $.ajax({
     url: "output.php",
@@ -165,6 +247,17 @@ $(document).ready(function(){
   	}
   });
 
+  $('#network-card').click(function(){
+    window.location = "faq-list.php?view=network";
+  });
+
+  $('#technicals-card').click(function(){
+    window.location = "faq-list.php?view=technicals";
+  });
+
+  $('#access-card').click(function(){
+    window.location = "faq-list.php?view=access";
+  });
   //Search
   $('.search-box2 input[type="text"]').on("keyup input", function(){
      /* Get input value on change */
@@ -265,9 +358,11 @@ $(document).ready(function(){
     text: "Make sure all details are correct.",
     icon: "warning",
     buttons: ["Close", "Submit"],
-    dangerMode: true,
+
     }).then((willSubmit) => {
       if(willSubmit){
+        $('.preloader-wrapper').show();
+        $('.preloader-background').show();
         $.ajax({
           url: 'php_processes/new-requestor.php',
           type: 'POST',
@@ -302,10 +397,11 @@ $(document).ready(function(){
     text: "Make sure to remember your password before confirming.",
     icon: "warning",
     buttons: ["Close", "Submit"],
-    dangerMode: true,
+
     }).then((willSubmit) => {
       if(willSubmit){
         $('.preloader-background#reset').show();
+        $('.preloader-background').show();
         $.ajax({
           url: 'php_processes/forgot-password.php',
           type: 'POST',
@@ -360,7 +456,7 @@ $(document).ready(function(){
     text: "Make sure to review your submission before confirming.",
     icon: "warning",
     buttons: ["Close", "Submit"],
-    dangerMode: true,
+
     }).then((willSubmit) => {
       if(willSubmit){
         $.ajax({
@@ -394,14 +490,16 @@ $(document).ready(function(){
   //Submit Access Ticket
   $("#access").submit(function(e) {
       e.preventDefault();
+
       swal({
       title: "Submit ticket?",
       text: "Make sure to review your submission before confirming.",
       icon: "warning",
       buttons: ["Close", "Submit"],
-      dangerMode: true,
       }).then((willSubmit) => {
         if(willSubmit){
+          $('.preloader-wrapper').show();
+          $('.preloader-background').show();
           $.ajax({
             url: 'php_processes/access_ticket_process.php',
             type: 'POST',
@@ -410,7 +508,7 @@ $(document).ready(function(){
             success:function(json) {
               if (json[0]=='success') {
                 swal({
-                   title: "Submission Success!",
+                   title: "Request Submitted!",
                    text: "Your ticket number is: " +json[1],
                    type: "success",
                    icon: "success"
@@ -461,7 +559,7 @@ $(document).ready(function(){
       text: "Confirming this will officially close the ticket.",
       icon: "warning",
       buttons: ["Cancel", "Confirm"],
-      dangerMode: true,
+
     }).then((willConfirm) => {
       if(willConfirm){
         $.ajax({
@@ -491,7 +589,7 @@ $(document).ready(function(){
        text: "Confirming this will officially reject the ticket.",
        icon: "warning",
        buttons: ["Cancel", "Confirm"],
-       dangerMode: true,
+
      }).then((willConfirm) => {
        if(willConfirm){
          $.ajax({
@@ -627,9 +725,11 @@ $(document).ready(function(){
      text: "You will not be able to undo the action.",
      icon: "warning",
      buttons: ["Close", "Confirm"],
-     dangerMode: true,
+
    }).then((willDelete) => {
      if(willDelete){
+       $('.preloader-wrapper').show();
+       $('.preloader-background').show();
        $.ajax({
          url: 'php_processes/check-process.php',
          type: 'POST',
@@ -656,7 +756,7 @@ $(document).ready(function(){
      text: "You will not be able to undo the action and edit the ticket.",
      icon: "warning",
      buttons: ["Close", "Confirm"],
-     dangerMode: true,
+
     }).then((willDelete) => {
      if (willDelete) {
        $.ajax({
@@ -688,7 +788,7 @@ $(document).ready(function(){
      text: "You will not be able to undo the action.",
      icon: "warning",
      buttons: ["Close", "Confirm"],
-     dangerMode: true,
+
    }).then((willDelete) => {
      if(willDelete){
        $.ajax({
@@ -717,7 +817,7 @@ $(document).ready(function(){
     text: "You will not be able to undo the action.",
     icon: "warning",
     buttons: ["Close", "Confirm"],
-    dangerMode: true,
+
   }).then((willDelete) => {
     if(willDelete){
       $.ajax({
@@ -728,7 +828,7 @@ $(document).ready(function(){
          {
            swal("Ticket Rejected", " ", "success").then(function(){
              location.reload();
-             $(".approve-reject").hide();
+
            });
          }
        })
@@ -773,7 +873,7 @@ $(document).ready(function(){
       text: "Make sure to recheck all details before submitting.",
       icon: "warning",
       buttons: ["Close", "Submit"],
-      dangerMode: true,
+
     }).then((willDelete) => {
       if(willDelete){
         $.ajax({
@@ -805,7 +905,7 @@ $(document).ready(function(){
     text: "You will not be able to undo this action.",
     icon: "warning",
     buttons: ["Cancel", "Delete"],
-    dangerMode: true,
+
   }).then((willDelete) => {
     if(willDelete){
       $.ajax({
@@ -836,7 +936,7 @@ $(document).ready(function(){
       title: "Submit Edited Article?",
       icon: "warning",
       buttons: ["Close", "Submit"],
-      dangerMode: true,
+
     }).then((willEdit) => {
       if(willEdit){
         $.ajax({
@@ -902,7 +1002,7 @@ $("#subcategory").submit(function(e) {
      text: "Make sure it is not yet existing!",
      icon: "warning",
      buttons: ["Close", "Confirm"],
-     dangerMode: true,
+
    }).then((willDelete) => {
      if(willDelete){
        $.ajax({

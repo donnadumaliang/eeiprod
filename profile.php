@@ -18,7 +18,6 @@
           text: "This will set the user's account as inactive",
           icon: "warning",
           buttons: ["Cancel", "Deactivate"],
-          dangerMode: true,
          })
          .then((willDeactivate) => {
           if (willDeactivate) {
@@ -53,7 +52,6 @@
              text: "This will set the user's account as active.",
              icon: "warning",
              buttons: ["Cancel", "Reactivate"],
-             dangerMode: true,
             })
             .then((willSubmit) => {
              if (willSubmit) {
@@ -107,18 +105,18 @@
             $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
 
             mysqli_close($db); ?>
-        <span class="row" id="ticket-actions">
-          <button id="reactivate" class = "btn orange-btn edit_profile" name="submit" type="submit">Edit Profile</button>
-          <button id="reactivate" class = "btn blue-btn save_profile" name="submit" type="submit" type="hidden">Save Profile</button>
-          <?php
-          if($row['isActive'] == '0'){ ?>
-            <button disabled id="deactivated" class="btn">Deactivated</button>
-            <button onclick="reactivateAccount(<?php echo $row['user_id']?>)" id="reactivate" class="btn blue-btn">Reactivate</button>
-          <?php } else{
-          ?>
-            <button onclick="deactivateAccount(<?php echo $row['user_id']?>)" id="deactivate" class="btn red-btn">Deactivate</button>
-          <?php } ?>
-        </span>
+            <span class="row" id="ticket-actions">
+              <button id="reactivate" class = "btn orange-btn edit_profile" name="submit" type="submit">Edit Profile</button>
+              <button id="reactivate" class = "btn blue-btn save_profile" name="submit" type="submit" type="hidden">Save Profile</button>
+              <?php
+              if($row['isActive'] == '0'){ ?>
+                <button disabled id="deactivated" class="btn">Deactivated</button>
+                <button onclick="reactivateAccount(<?php echo $row['user_id']?>)" id="reactivate" class="btn blue-btn">Reactivate</button>
+              <?php } else{
+              ?>
+                <button onclick="deactivateAccount(<?php echo $row['user_id']?>)" id="deactivate" class="btn red-btn">Deactivate</button>
+              <?php } ?>
+            </span>
         <div class="col s12" id="breadcrumb">
           <a href="manageUsers.php" class="breadcrumb">Manage Users</a>
           <a href="#!" class="breadcrumb">User Profile</a>
@@ -128,6 +126,7 @@
         <div class="profile-body">
           <h4 class="body-header"><b><?php echo $row['first_name'] . ' ' . $row['last_name'] ?></b></h4>
           <h6 class="body-header" id="line2"><b><?php echo $row['user_type'] ?></b></h6>
+
               <table id="profile">
                 <tbody>
                   <tr>
@@ -192,8 +191,9 @@
               </table>
 
             </div>
-            <?php include 'templates/ticketforms.php'; ?>
+
           </div> <!-- End of main container of col 10 -->
+          <?php include 'templates/ticketforms.php'; ?>
         </div> <!-- End of wrapper of col l10 -->
     <?php include 'templates/mobile-ticket-buttons.php' ?>
     <?php include 'templates/js_resources.php' ?>

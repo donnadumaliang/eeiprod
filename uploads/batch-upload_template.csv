@@ -1,0 +1,8 @@
+User ID,First Name,Last Name,Email Address,User Type
+sample,sample,sample,sample,Requestor
+,,,,Administrator
+,,,,Technicals Group Manager
+,,,,Network Group Manager
+,,,,Access Group Manager
+,,,,Technician
+,,,,Network Engineer

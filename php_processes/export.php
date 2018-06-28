@@ -63,8 +63,8 @@ $row2=$row2+2;
 $spreadsheet->getActiveSheet()->setCellValue('A' . $row2, 'Open/Closed Ticket Summary');
 $spreadsheet->getActiveSheet()->getStyle('A' . $row2 . ':D' . $row2)->getFont()->setBold(true);
 
-$query = "SELECT 'Open' as ticket_status, COUNT(ticket_id) AS count FROM ticket_t WHERE ticket_status <= '7' AND ticket_status >= '5' AND (ticket_t.date_prepared BETWEEN '$startdate' AND '$end')
-UNION SELECT 'Closed' ticket_status, COUNT(ticket_id) AS count FROM ticket_t WHERE ticket_status > '6' and (ticket_t.date_prepared BETWEEN '$startdate' AND '$end')
+$query = "SELECT 'Open' as ticket_status, COUNT(ticket_id) AS count FROM ticket_t WHERE ticket_status <= 7 AND ticket_status >= 5 AND (ticket_t.date_prepared BETWEEN '$startdate' AND '$end')
+UNION SELECT 'Closed' ticket_status, COUNT(ticket_id) AS count FROM ticket_t WHERE ticket_status = 8 and (ticket_t.date_prepared BETWEEN '$startdate' AND '$end')
 ";
 $result = mysqli_query($db,$query);
 $row2=$row2+1;
@@ -84,7 +84,7 @@ $spreadsheet->getActiveSheet()->setCellValue('A' . $row2, 'Ticket By Category Su
 $spreadsheet->getActiveSheet()->getStyle('A' . $row2 . ':D' . $row2)->getFont()->setBold(true);
 
 $query = "SELECT t.ticket_category, count(t.ticket_id) as 'Ticket Count' FROM ticket_t t WHERE t.ticket_category is not null AND t.ticket_category!='' and (t.date_prepared BETWEEN '$startdate' AND '$end')
-group by t.ticket_category UNION SELECT 'Unassigned', count(t.ticket_id) as 'Ticket Count' FROM ticket_t t WHERE t.ticket_category is null AND (t.date_prepared BETWEEN '$startdate' AND '$end')";
+group by t.ticket_category UNION SELECT 'Unassigned', count(t.ticket_id) as 'Ticket Count' FROM ticket_t t WHERE t.ticket_category is null AND t.ticket_status != 9 AND (t.date_prepared BETWEEN '$startdate' AND '$end')";
 
 $result = mysqli_query($db,$query);
 $row2=$row2+1;

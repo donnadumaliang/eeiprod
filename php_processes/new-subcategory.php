@@ -6,8 +6,11 @@ $db = mysqli_connect("localhost", "root", "", "eei_db");
 $subcategory = mysqli_real_escape_string($db, $_POST['subcategory_name']);
 $category = mysqli_real_escape_string($db, $_POST['category']);
 
-$result = $mysqli->query("SELECT subcategory_name FROM faq_subcategory_t WHERE subcategory_name = '$subcategory'");
-if($result->num_rows == 0) {
+$sql2 = "SELECT subcategory_name FROM faq_subcategory_t WHERE subcategory_name = '$subcategory'";
+$result=mysqli_query($db, $sql2);
+$count=mysqli_num_rows($result);
+
+if($count == 0) {
      // row not found, do stuff...
 
      $sql = "INSERT INTO faq_subcategory_t VALUES(DEFAULT, '$subcategory','$category')";

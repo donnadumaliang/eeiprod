@@ -21,6 +21,16 @@
 }
 
 @media only screen and (max-width:400px){
+  div#breadcrumb {
+    padding-left: 0px!important;
+    font-size: 10px!important;
+    }
+    #service-details td:first-child{
+      width: 50%;
+      vertical-align: top;
+      font-weight: 500;
+    }
+
   .btn-newuser {
       box-shadow: none;
       background-color: transparent!important;
@@ -35,19 +45,17 @@
       font-size: 12px;
     }
 
-    .btn-newuser.batch{
-      display: none!important;
-    }
+
   .modal-overlay{
     position: inherit!important;
   }
   div.actions {
-    padding: 5px 0px!important;
-    display: inline-block;
-    text-align: center;
-    margin: 0 auto!important;
-    width: 100%;
-    background-color: #4b75ff;
+    padding: 5px 15px!important;
+  display: inline-block;
+  text-align: left;
+  margin: 0 auto!important;
+  width: 100%;
+  background-color: #4b75ff;
   }
 
   .btn-sort, .btn-sort:focus {
@@ -78,6 +86,20 @@
 
 }
 @media only screen and (max-width : 600px) {
+  input#cancel{
+    margin-right: 0px;
+  }
+  span#faq-title{
+    margin-left: 0px;
+  }
+  .col-tickettype{
+    display: none!important;m
+  }
+
+  h6#ticket-forms {
+      margin-left: 5px!important;
+      margin-top: 20px;
+  }
   /* div.material-table .hiddensearch {
     margin-top: none!important;
     margin-top: none!important;
@@ -99,7 +121,6 @@
 span#ticket-actions {
   vertical-align: middle;
   display: inline-flex;
-  margin-top: -8px;
   margin-left: -5px;
   margin-bottom: 10px!important;
   float: right!important;
@@ -110,16 +131,13 @@ td#type{
 }
 td.col-sevcat#type{
   padding-left: 10px!important;
-width: 15%!important;
+width: 17%!important;
 }
 
 td.col-ticketno{
   width: 22%!important;
 }
 
-a#addfaq{
-  display: none;
-}
 
 span#sup{
   font-size: 40px!important;
@@ -129,9 +147,6 @@ span#sub{
   font-size: 25px!important;
 }
 
-p.dashboard.no-margin{
-  font-size: 18px!important;
-}
 
 h4#dashboard{
   font-size: 20px!important;
@@ -194,6 +209,19 @@ a.mobile-search{
   .col-hideuserid{
     display: none!important;
   }
+  .col-hidereqname{
+    display: none!important;
+  }
+
+  .col-hideemail,td.user-row.col-hideemail{
+    padding-left: 15px!important;
+
+  }
+  a.btn-mobile-search.search-toggle{
+    display: block!important;
+  }
+
+
   .col-hidedatecreated{
     display: none;
   }
@@ -290,7 +318,7 @@ cursor: pointer;
 
   div#breadcrumb {
     padding-left: 0px!important;
-    font-size: 12px!important;
+    font-size: 10px!important;
     }
 
   div.chart{
@@ -319,7 +347,6 @@ div#log{
   }
 
   div#service, div#access, div#requestor, div#batch{
-    padding-top: 20px!important;
     height: inherit;
   }
 
@@ -370,16 +397,181 @@ div#log{
   }
 }
 
-
+@media only screen and (max-width: 1300px){
+    button#mobile-save{
+      display: block!important;
+    }
+    input#web-save{
+      display: none!important;
+    }
+}
 
 @media only screen and (max-width: 992px){
   div.detail-actions{
     display: inline-flex!important;
   }
 
-  /* .card .card-content{
-    min-height: 160px!important;
+  div#right-align{
+    text-align: center;
+    padding-right: 0px;
+  }
+  p#sev{
+    display: none!important;
+  }
+  div#left-align{
+    text-align: center;
+    padding-left: 0px;
+  }
+  p#fraction-label{
+    display: none!important;
+  }
+  p#sev-mobile-label{
+    display: block;
+font-size: 12px;
+margin-top: 5px;
+font-weight: 500;
+margin-bottom: 10px;
+  }
+
+  .sev#sev-mobile-label::before {
+      color: #795548;
+      font-family: "Material Icons";
+      content: "\E002";
+      /* Unicode of character to precede the list item */
+      font-size: 17px;
+      margin-right: 10px;
+      position: relative;
+      padding-top: 1em;
+      font-weight: 400;
+    }
+
+  .sev1#sev-mobile-label::before {
+      color: #ee1b24;
+      font-family: 'Material Icons';
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      content: "lens";
+      font-size: 10px;
+      margin-right: 10px;
+      position: relative;
+      padding-top: 1em;
+      font-weight: 400;
+    }
+
+    .unassigned#sev-mobile-label::before {
+        color: darkgray;
+        font-family: 'Material Icons';
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+        content: "lens";
+        font-size: 10px;
+        margin-right: 10px;
+        position: relative;
+        padding-top: 1em;
+        font-weight: 400;
+      }
+
+
+
+  .sev2#sev-mobile-label::before {
+      color: #fb9213;
+      font-family: 'Material Icons';
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      content: "lens";
+      font-size: 10px;
+      margin-right: 10px;
+      position: relative;
+      padding-top: 1em;
+      font-weight: 400;
+    }
+
+  .sev3#sev-mobile-label::before {
+      color: #f1c319;
+      font-family: 'Material Icons';
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      content: "lens";
+      font-size: 10px;
+      margin-right: 10px;
+      position: relative;
+      padding-top: 1em;
+      font-weight: 400;
+    }
+
+  .sev4#sev-mobile-label::before {
+      color: #19ce46;
+      font-family: 'Material Icons';
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      content: "lens";
+      font-size: 10px;
+      margin-right: 10px;
+      position: relative;
+      padding-top: 1em;
+      font-weight: 400;
+    }
+
+  .sev5#sev-mobile-label::before {
+      color: #0e76bd;
+      font-family: 'Material Icons';
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      content: "lens";
+      font-size: 10px;
+      margin-right: 10px;
+      position: relative;
+      font-weight: 400;
+      padding-top: 1em;
+      }
+
+  .blanksev#sev-mobile-label::before {
+      content: "For Review";
+      font-style: italic;
+      /* Unicode of character to precede the list item */
+      margin-right: 10px;
+      position: relative;
+      font-weight: 400;
+      padding-top: 1em;
+      }
+
+  p#sevlevel{
+    display: none!important;
+  }
+
+  /* p#fraction-label{
+    display: none!important;
   } */
+
+  .col-hideuserid{
+    display: none!important;
+
+  }
+
+  .col-hidereqname{
+    width: 32%;
+  }
+  .col-hideemail{
+    width: 30%;
+  }
+
+  .col-hideusertype{
+    width: 30%;
+  }
+
+  .col-hideemail{
+    width: 30%;
+  }
+
+  .col-accountstat{
+  }
+
+  i.large{
+    font-size: 4.5em!important;
+  }
+  div#kb{
+    min-height: 170px!important;
+  }
 
   div.detail-actions {
     margin-left: 20px!important;

@@ -5,12 +5,9 @@
 <title>EEI Service Desk</title>
     <?php include 'templates/css_resources.php' ?>
   </head>
-  <?php if(isset($_COOKIE['userid'])){ ?>
-    <script>window.location.assign('home.php')</script>
-    <?php } ?>
   <body id="login-page">
       <div class="row">
-      <div class="col s12 m12 l4 offset-l4">
+      <div class="col s12 m6 offset-m3 l4 offset-l4">
           <div class="card-panel" id="login" class="row">
             <div class="card-content white-text">
               <div class="row">
@@ -48,7 +45,7 @@
             <div class="modal-content">
               <h6>Enter registered email address</h6>
               <br>
-              <form id="forgot-password" name="forgot-password" method="post">
+              <form id="forgotPassword" name="forgot-password" method="post">
                 <div class="col s12 m12 l12 forgot-password-box" id="forgot-password-box">
                   <div class="input-field forgot-password" id="request-form-row2">
                     <div class="input-field" id="request-form">
@@ -100,9 +97,6 @@
         $_SESSION['first_name'] = $fname;
         $_SESSION['last_name'] = $lname;
         $_SESSION['email_address'] = $email;
-
-        $hour = time() + 3600;
-        setcookie('userid', $_POST['userid'], $hour, '/');
 
         $year = time() + 31536000;
         if($_POST['remember_me']) {

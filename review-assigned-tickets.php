@@ -29,15 +29,15 @@
             }
             else if ($_SESSION['user_type'] == "Access Group Manager"){
               $id = $_SESSION['user_id'];
-              $query = "SELECT COUNT(*) as count FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.it_group_manager_id = '$id' OR uat.checker='$id' OR uat.approver = '$id')";
+              $query = "SELECT COUNT(*) as count FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.ticket_category = 'Access' OR uat.checker='$id' OR uat.approver = '$id')";
             }
             else if ($_SESSION['user_type'] == "Technicals Group Manager"){
               $id = $_SESSION['user_id'];
-              $query = "SELECT COUNT(*) as count FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.it_group_manager_id = '$id' OR uat.checker='$id' OR uat.approver = '$id')";
+              $query = "SELECT COUNT(*) as count FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.ticket_category = 'Technicals' OR uat.checker='$id' OR uat.approver = '$id')";
             }
             else if ($_SESSION['user_type'] == "Network Group Manager"){
               $id = $_SESSION['user_id'];
-              $query = "SELECT COUNT(*) as count FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.it_group_manager_id = '$id' OR uat.checker='$id' OR uat.approver = '$id')";
+              $query = "SELECT COUNT(*) as count FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.ticket_category = 'Network' OR uat.checker='$id' OR uat.approver = '$id')";
             }
 
               $result = mysqli_query($db,$query);
@@ -58,7 +58,7 @@
                 <table id="datatable" class="striped">
                     <thead>
                         <tr>
-                          <th class="col-catsev"></th>
+                          <th class="col-sevcat"></th>
                           <th class="col-ticketno">Ticket No.</th>
                           <th class="col-title">Title</th>
                           <th class="col-hidedatecreated">Date Created</th>
@@ -125,7 +125,7 @@
                             <?php
                             $id = $_SESSION['user_id'];
 
-                            $query = "SELECT * FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.it_group_manager_id = '$id' OR uat.checker='$id' OR uat.approver = '$id')";
+                            $query = "SELECT * FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.ticket_category = 'Access' OR uat.checker='$id' OR uat.approver = '$id')";
                             $stat = 'Assigned';
                             include 'templates/review-tickets-sorter.php';
                             $result = mysqli_query($db,$query);
@@ -187,7 +187,7 @@
                 <?php
                 $id = $_SESSION['user_id'];
 
-                $query = "SELECT * FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.it_group_manager_id = '$id' OR uat.checker='$id' OR uat.approver = '$id')";
+                $query = "SELECT * FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.ticket_category = 'Technicals' OR uat.checker='$id' OR uat.approver = '$id')";
                 $stat = 'Assigned';
                 include 'templates/review-tickets-sorter.php';
 
@@ -250,7 +250,7 @@
                       <?php
                       $id = $_SESSION['user_id'];
 
-                      $query = "SELECT * FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.it_group_manager_id = '$id' OR uat.checker='$id' OR uat.approver = '$id')";
+                      $query = "SELECT * FROM ticket_t t LEFT JOIN service_ticket_t st USING (ticket_id) LEFT JOIN user_access_ticket_t uat USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status = 6 AND (t.ticket_category = 'Network' OR uat.checker='$id' OR uat.approver = '$id')";
                         $stat = 'Assigned';
                         include 'templates/review-tickets-sorter.php';
                         $result = mysqli_query($db,$query);?>

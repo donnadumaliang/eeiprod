@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="shortcut icon" type="image/x-icon" href="https://www.eei.com.ph/img/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="img/eei-black.png" />
     <title>EEI Service Desk</title>
     <?php include 'templates/css_resources.php' ?>
   </head>
@@ -20,11 +20,7 @@
         <div class="col s12 m12 l12 table-header">
           <span id="faq-title"><i class="material-icons">library_add</i><span class="table-title">Create Knowledge Base Article</span></span>
           <div class="col s12" id="breadcrumb">
-            <?php if($_SESSION['user_type'] != 'Administrator'){ ?>
             <a href="home.php" class="breadcrumb">Knowledge Base</a>
-          <?php } else { ?>
-            <a href="knowledgebase.php" class="breadcrumb">Knowledge Base</a>
-          <?php }?>
             <a href="#!" class="breadcrumb">Create Knowledge Base Article</a>
           </div>
         </div>
@@ -40,7 +36,7 @@
               <br>
               <div class="input-field ticket-properties" id="request-form">
                 <?php
-                  ?>
+                  $db = mysqli_connect("localhost", "root", "", "eei_db");?>
                   <select name = "category" required>
                   <option disabled selected>Select</option>
                   <?php $getcategory = mysqli_query($db, "SELECT column_type FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'faq_article_t' AND COLUMN_NAME = 'category'");
@@ -55,7 +51,7 @@
               <br>
               <div class="input-field ticket-properties" id="request-form">
             <?php
-              ?>
+              $db = mysqli_connect("localhost", "root", "", "eei_db");?>
 
               <select name = "subcategory" required>
               <option disabled selected>Select</option>
@@ -79,10 +75,10 @@
           </div>
         </form>
       </div>
-      </div>
-      <?php include 'templates/ticketforms.php'; ?>
-      <?php include 'templates/js_resources.php' ?>
+        <?php include 'templates/ticketforms.php'; ?>
+        <?php include 'templates/js_resources.php' ?>
 
+      </div>
 
     </div>
     <script>

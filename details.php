@@ -43,7 +43,7 @@
 
                 <!-- Div for All Action Buttons -->
                 <span class="row" id="ticket-actions">
-                  <?php if($row['ticket_status'] != 8 AND $row['user_id'] == $_SESSION['user_id']){?>
+                  <?php if($row['ticket_status'] != 8 AND $row['ticket_status'] != 9 AND $row['user_id'] == $_SESSION['user_id']){?>
                     <form>
                     <input id="attach" type="submit" class="modal-trigger" href="#attachfile" value="Attach File" />
                     </form
@@ -62,7 +62,7 @@
                          <div class="modal-content">
                            <h5>Reject Ticket</h5>
                              <div class="input-field " id="request-form-row6">
-                               <input placeholder=" " type="text" name="reason">
+                               <input placeholder=" " type="text" name="reason" required>
                                  <label for="title">Reason:</label>
                              </div>
                              <input  id="confirm" name = "ticketID" type="hidden" value="<?php echo $ticketID?>">
@@ -70,33 +70,41 @@
                              </div>
                            <div class="modal-footer">
                              <a  class="btn modal-action modal-close">Close</a>
-                             <button class="btn" id="return" type="submit" name="submit">Reject</button>
+                             <button class="btn blue-btn" id="return" type="submit" name="submit">Reject</button>
                            </div>
                        </form>
                        </div>
                    <?php }} ?>
 
                   <!-- Cancel Button for Admin -->
-                   <?php if ($_SESSION['user_type']=="Administrator" AND $row['ticket_status'] == 5) {?>
+                   <?php if ($_SESSION['user_type']=="Administrator" AND $row['ticket_status'] != 9 AND $row['ticket_status'] <= 5) {?>
                      <form id="cancel" name="cancel" method="post">
                        <input id="cancel" type="submit" value="Cancel">
                        <input  id="cancel" name = "ticketID" type="hidden" value="<?php echo $ticketID?>">
                      </form>
                    <?php }?>
+                   <?php if ($_SESSION['user_id']==$row['user_id'] AND $row['ticket_status'] ==1 AND $_SESSION['user_type']!="Administrator"){?>
+                    <form id="cancel" name="cancel" method="post">
+                      <input id="cancel" type="submit" value="Cancel">
+                      <input  id="cancel" name = "ticketID" type="hidden" value="<?php echo $ticketID?>">
+                    </form>
+                  <?php }?>
+
+
 
                    <!-- Return Button for Ticket Agents -->
-                   <?php if (($row['ticket_status'] < 7) AND ($_SESSION['user_type']=="Technician" OR $_SESSION['user_type']=="Network Engineer")) {?>
+                   <?php if (($row['ticket_status'] < 7) AND ($_SESSION['user_type']=="Technician" OR $_SESSION['user_type']=="Network Engineer") AND $row['user_id'] != $_SESSION['user_id']) {?>
                        <input id="return" type="submit" class="modal-trigger" href="#returnsupervisor" value="Return to Supervisor" />
                    <?php  }?>
 
                    <!-- Return Button for Group Managers -->
-                   <?php if (($row['ticket_status'] < 7) AND ($_SESSION['user_type']=="Access Group Manager" OR $_SESSION['user_type']=="Technicals Group Manager" OR $_SESSION['user_type']=="Network Group Manager") AND ($row['ticket_type'] == "Service" OR ($id != $row['checker'] AND $row['ticket_type'] =="User Access" AND $row['isChecked'] != NULL) OR ($row['ticket_type'] =="User Access" AND $id != $row['approver'] AND $row['isApproved'] != NULL))) { ?>
+                   <?php if (($row['ticket_status'] < 7) AND ($_SESSION['user_type']=="Access Group Manager" OR $_SESSION['user_type']=="Technicals Group Manager" OR $_SESSION['user_type']=="Network Group Manager") AND $row['user_id'] != $_SESSION['user_id'] AND ($row['ticket_type'] == "Service" OR ($id != $row['checker'] AND $row['ticket_type'] =="User Access" AND $row['isChecked'] != NULL) OR ($row['ticket_type'] =="User Access" AND $id != $row['approver'] AND $row['isApproved'] != NULL))) { ?>
                        <input id="return" type="submit" class="modal-trigger" href="#returnadmin" value="Return Ticket" />
                    <?php  }?>
 
 
                   <!-- Approve, Check and Reject Button for Approver/Checker  -->
-                  <div class="approve-reject">
+                  <div id="app-rej" class="approve-reject">
                      <?php if ($row['approver']==$id  && $row['isApproved'] != 1 && ($row['isChecked'] == 1 OR $row['checker'] == NULL)) { ?>
                          <form id="approve" name="approve" method="post">
                            <input id="approve" type="submit" value="Approve">
@@ -108,7 +116,7 @@
                            <input  id="reject" name = "ticketID" type="hidden" value="<?php echo $ticketID?>">
                          </form>
                       <?php }
-                       elseif ($row['checker']==$_SESSION['user_id'] && $row['isChecked']!=1) { ?>
+                       elseif ($row['checker']==$_SESSION['user_id'] && $row['isChecked']!= 1) { ?>
                         <form id="check" name="check" method="post">
                           <input id="check" type="submit" value="Check">
                           <input id="check" name = "ticketID" type="hidden" value="<?php echo $ticketID?>">
@@ -117,7 +125,7 @@
                           <a href="#modal-reject-ticket" class="modal-trigger"><input id="reject" type="submit"  value="Reject"></input></a>
                           <input  id="reject" name = "ticketID" type="hidden" value="<?php echo $ticketID?>">
                         </form>
-                    <?php }} ?>
+                    <?php } ?>
                       <div id="modal-reject-ticket" class="modal">
                       <form method='post' name="reject-ticket" id="reject-ticket">
                         <div class="modal-content">
@@ -131,11 +139,12 @@
                             </div>
                           <div class="modal-footer">
                             <a  class="btn modal-action modal-close">Close</a>
-                            <button class="btn" id="return" type="submit" name="submit">Reject</button>
+                            <button class="btn blue-btn" id="return" type="submit" name="submit">Reject</button>
                           </div>
                       </form>
                       </div>
                    </div>
+                 <?php } ?>
 
                   <!-- RETURN TICKET MODAL -->
                   <div id="returnsupervisor" class="modal">
@@ -222,19 +231,26 @@
                       <?php
                         $db = mysqli_connect("localhost", "root", "", "eei_db");
 
-                        $query = "SELECT t.ticket_type, t.ticket_title, s.request_details, t.auto_close_date,r.email_address as email, DATE_FORMAT(date_prepared, '%W %b %e %Y %r') as date_prepared, CONCAT(r.first_name, ' ', r.last_name) As requestor FROM ticket_t t INNER JOIN user_t r  on (t.user_id=r.user_id) left join service_ticket_t s on (s.ticket_id=t.ticket_id) WHERE s.ticket_id = '".$_GET['id']."'";
+                        $query = "SELECT *, t.ticket_type, t.ticket_title, s.request_details, t.auto_close_date,r.email_address as email, DATE_FORMAT(date_prepared, '%W %b %e %Y %r') as date_prepared, CONCAT(r.first_name, ' ', r.last_name) As requestor FROM ticket_t t INNER JOIN user_t r  on (t.user_id=r.user_id) left join service_ticket_t s on (s.ticket_id=t.ticket_id) WHERE s.ticket_id = '".$_GET['id']."'";
 
                         $query2 = "SELECT *, r.email_address as email, DATE_FORMAT(date_prepared, '%W %M %e %Y') as date_prepared, CONCAT(r.first_name, ' ', r.last_name) As requestor , r.user_type as user_type FROM ticket_t t INNER JOIN user_t r  on (t.user_id=r.user_id) left join user_access_ticket_t u on (u.ticket_id=t.ticket_id) WHERE u.ticket_id = '".$_GET['id']."'";
 
                         $result = mysqli_query($db,$query);
-                        $result2 = mysqli_query($db,$query2);
+                        $result2 = mysqli_query($db,$query2); ?>
 
+                        <table id="service-details">
+                          <tbody id="details">
+                        <?php
                         while($row = mysqli_fetch_assoc($result)){
-                            $email = $row['email'];
-                           echo "<h5><b>" . $row['ticket_title'] . "</h5></b>" .
-                                "<p id=\"requestor_details\">" . "<style=\"color:blue\">" . "<span class=\"name-in-ticket tooltipped\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"$email\">" . $row['requestor'] . "</span>" . "<span class=\"request_date\">" . " reported on " . $row['date_prepared'] . "</p>" .
-                                "<p id=\"details\">" . $row['request_details'] . "</p>";
-
+                        $email = $row['email'];
+                         echo "<h5><b>" . $row['ticket_title'] . "</h5></b>" .
+                         "<p id=\"requestor_details\">" . "<style=\"color:blue\">" . "<span class=\"name-in-ticket tooltipped\" data-position=\"right\" data-delay=\"50\" data-tooltip=\"$email\">" . $row['requestor'] . "</span>" . "<span class=\"request_date\">" . " reported on " . $row['date_prepared'] . "</p>" .
+                             "<tr><td>" . "R.C. Number:" . "</td><td>"  .  $row['rc_no'] . "</td></tr>" .
+                              "<tr><td>" . "Asset Number:" . "</td><td>"  .  $row['asset_no'] . "</td></tr>" .
+                              "<tr><td>" . "Department/Project:" . "</td><td>"  .  $row['dept_proj'] . "</td></tr>" .
+                              "<tr><td>" . "Details:" . "</b></td><td>".  $row['request_details'] .  "</td></tr>";
+                              // "<tr><td>"  "</td></tr>";  ?>
+                                <?php
                               $dt = new DateTime(date('Y-m-d H:i:s'));
                               $curDate = $dt->format('Y-m-d H:i:s');
                               if ($row['auto_close_date']<=$curDate && $row['ticket_status'] = 7 && !($row['auto_close_date']== NULL)) {
@@ -247,7 +263,7 @@
                             };   ?>
                          <!-- need this to stop warning if service ticket-->
 
-                          <table id="access-details">
+                          <table id="service-details">
                             <tbody id="details">
                               <?php
                               while($row = mysqli_fetch_assoc($result2)){
@@ -266,6 +282,7 @@
                                <tbody id="details">
                                  <th>Name</th>
                                  <th>Application Type</th>
+                                 <th>Access Right</th>
                                  <th>Application</th>
                                  <?php
                                  $query1 = "SELECT * FROM request_details_t WHERE ticket_id = '".$_GET['id']."'";
@@ -273,6 +290,7 @@
                                  while($row = mysqli_fetch_assoc($result)){
                                     echo  "<tr><td>". $row['name'] . "</td>" .
                                        "<td>". $row['request_type'] . "</td>" .
+                                       "<td>". $row['access_request'] ."</td>" .
                                        "<td>". $row['application_name'] ."</td> </tr>";
                                  }?>
                                </tbody>
@@ -294,8 +312,7 @@
                           while($row=mysqli_fetch_array($result)){
                               echo "<div class='card panel comments_content'>";
                               echo "<div id=\"logs\">" .
-                              "<div class=\"user\">" . $row['user'] . "</div>" .
-                              "<div class=\"date_posted\">" . $row['timestamp'] . "</div>" .
+                              "<div class=\"user\">" . $row['user'] . "<span class='date_posted'>" . "&nbsp;&nbsp;&bull;&nbsp;&nbsp;"  . $row['timestamp'] . "</span></div>" .
                               "<div class=\"details\">" .  $row['activity_log_details'] . "</div>" .
                               "</div></div>";
                           }}
@@ -323,7 +340,7 @@
                                     $ticketID = $row['ticket_id'];
                                   }
                                  ?>
-                                 <div class="tprop"><input id="submit" class="waves-effect waves-light save" type="submit" name="submit" onclick="php_processes/activitylog_process.php'" value="Post" />
+                                 <div class="tprop"><input class="blue-btn" id="web-save" type="submit" name="submit" onclick="php_processes/activitylog_process.php'" value="Post" />
                                  <input id="post" name = "ticketID" type="hidden" value="<?php echo $ticketID?>"></div>
                                 </div>
                               </div>
@@ -345,12 +362,12 @@
                     if ($result = mysqli_fetch_array($tagent)){
                       if($result['ticket_agent_id'] == NULL){
                     ?>
-                  <?php if($_SESSION['user_type'] == 'Technicals Group Manager' AND $result['ticket_status'] == 5){ ?>
+                  <?php if($_SESSION['user_type'] == 'Technicals Group Manager' AND $result['ticket_status'] == 5  AND $result['ticket_category'] == 'Technicals'){ ?>
                     <div class="card-panel" id="ticket-properties">
                     <form id="assignee" name="properties" method="post">
                       <span id="panelheader"> Assign to Ticket Agent</h6></span>
                       <div class="tprop">
-                        <input class="waves-effect waves-light save" id="submit" name="submit" type="submit" value="Save">
+                        <input class="blue-btn" id="web-save" name="submit" type="submit" value="Save">
                         <input value = "<?php echo $_GET['id']?>" class="title" name="id" type="hidden" data-length="40" class="validate" required>
                         <?php
                         $db = mysqli_connect("localhost", "root", "", "eei_db");
@@ -386,7 +403,7 @@
                   </div>
                   </form>
                 <?php } ?>
-              <?php if($_SESSION['user_type'] == 'Network Group Manager'){ ?>
+              <?php if($_SESSION['user_type'] == 'Network Group Manager' AND $result['ticket_status'] == 5 AND $result['ticket_category'] == 'Network' ){ ?>
                 <div class="card-panel" id="ticket-properties">
                 <form id="assignee" name="properties" method="post">
                   <span id="panelheader"> Assign to Ticket Agent</h6></span>
@@ -548,17 +565,18 @@
                   <?php if($_SESSION['user_type'] == 'Administrator'){
                     $db = mysqli_connect("localhost", "root", "", "eei_db");
 
-                    $sevcat = mysqli_query($db, "SELECT severity_level, ticket_category FROM ticket_t WHERE ticket_id = '".$_GET['id']."'");
+                    $sevcat = mysqli_query($db, "SELECT ticket_status, severity_level, ticket_category FROM ticket_t WHERE ticket_id = '".$_GET['id']."'");
 
                     if ($result = mysqli_fetch_array($sevcat)){
-                      if($result['severity_level'] === NULL){
+                      if($result['severity_level'] === NULL AND $result['ticket_status'] <> 9){
                     ?>
                       <div class="card-panel" id="ticket-properties">
                         <span class="black-text">
                              <form id="properties" name="properties" method="post">
                                <span id="panelheader">Assign Ticket Properties</span>
                                <div id="card-header">
-                               <input class="waves-effect waves-light save" id="submit" name="submit" type="submit" value="Save">
+                               <input class="blue-btn hide-on-med-and-down" id="web-save" name="submit" type="submit" value="Save">
+                               <button class="blue-btn" id="mobile-save" name="submit" type="submit"><i class="material-icons">check</i></button>
                                <input value = "<?php echo $_GET['id']?>" class="title" name="id" type="hidden" data-length="40" class="validate" required>
                              </div>
                         </span>
@@ -629,17 +647,15 @@
                             <div class="col s12 m12 l12 properties-box" id="properties-box">
                               <div class="input-field ticket-properties" id="request-form-row6">
                                 <?php
-                                  $db = mysqli_connect("localhost", "root", "", "eei_db");?>
+                                   $db = mysqli_connect("localhost", "root", "", "eei_db");?>
                                   <?php $retrieve = mysqli_query($db, "SELECT * FROM ticket_t LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level WHERE ticket_id = '".$_GET['id']."'");
                                   $row = mysqli_fetch_array($retrieve);?>
 
                                   <select name = "status" required>
                                   <option value ="<?php echo $row['status_id']?>" selected ><?php echo $row['ticket_status']?></option>
                                   <?php
-                                  if($_SESSION['user_type'] == 'Access Group Manager' || $_SESSION['user_type'] == 'Network Group Manager'){
-                                    $get_stat = "SELECT * FROM ticket_status_t WHERE status_id >= 7 ";
-                                  } elseif($_SESSION['user_type'] == 'Technicals Group Manager'){
-                                    $get_stat = "SELECT * FROM ticket_status_t WHERE status_id = 7 ";
+                                  if($_SESSION['user_type'] == 'Access Group Manager' || $_SESSION['user_type'] == 'Network Group Manager' || $_SESSION['user_type'] == 'Technicals Group Manager'){
+                                    $get_stat = "SELECT * FROM ticket_status_t WHERE status_id = 7 OR status_id = 9 ";
                                   } elseif ($_SESSION['user_type'] == 'Administrator'){
                                     $get_stat = "SELECT * FROM ticket_status_t WHERE status_id = 7 OR status_id = 9 ";
                                   } elseif($_SESSION['user_type'] == 'Technician' || $_SESSION['user_type'] == 'Network Engineer'){
@@ -663,13 +679,19 @@
                               </div>
                               <div class="input-field ticket-properties" id="request-form-row6">
                                 <?php
-                                  $db = mysqli_connect("localhost", "root", "", "eei_db");
-?>
+                                   $db = mysqli_connect("localhost", "root", "", "eei_db");
+                                   ?>
 
                                   <?php $retrieve = mysqli_query($db, "SELECT ticket_status, ticket_category, severity_level FROM ticket_t WHERE ticket_id = '".$_GET['id']."'");
                                   $row = mysqli_fetch_array($retrieve);?>
+                                <?php if ($_SESSION['user_type']=="Administrator") {?>
+                                    <select name = "category" required>
+                                <?php }else{?>
+                                       <input type="hidden" name="category" value="<?php echo $row['ticket_category']?>">
+                                    <select name = "category" disabled>
 
-                                  <select name = "category" required>
+                                <?php }?>
+
                                   <option value = "<?php echo $row['ticket_category']?>"  selected><?php echo $row['ticket_category']?></option>
                                   <?php $get_user_type = mysqli_query($db, "SELECT column_type FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ticket_t' AND COLUMN_NAME = 'ticket_category'");
                                   $row2 = mysqli_fetch_array($get_user_type);
@@ -683,14 +705,21 @@
                                   </select>
                                   <label for="title">Ticket Category</label>
                               </div>
-                              
+
                               <div class="input-field ticket-properties" id="request-form-row6">
                                   <?php
-                                    $db = mysqli_connect("localhost", "root", "", "eei_db");?>
+                                     $db = mysqli_connect("localhost", "root", "", "eei_db");?>
                                     <?php $retrieve = mysqli_query($db, "SELECT * FROM ticket_t LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level WHERE ticket_id = '".$_GET['id']."'");
-                                    $row = mysqli_fetch_array($retrieve);?>
-											<select name='severity'>
-	
+                                    $row = mysqli_fetch_array($retrieve);
+
+                                     if ($_SESSION['user_type']=="Administrator") {?>
+                                        <select name = "severity" required>
+                                    <?php }else{?>
+                                           <input type="hidden" name="severity" value="<?php echo $row['id']?>">
+                                        <select name = "severity" disabled>
+
+                                    <?php }?>
+
                                         <option value = "<?php echo $row['id']?>"  selected><?php echo $row['severity_level']?></option>
                                       <?php
                                        $get_sevlvl = "SELECT * FROM sla_t";
@@ -707,8 +736,8 @@
 
                             </div>
                         </div>
-                        <div class="modal-footer">
-                          <input class="modal-action btn-flat" id="request-form-row" name="submit" type="submit" value="Save">
+                        <div class="modal-footer" id="unfixed">
+                          <input class="modal-action blue-btn" id="web-save" name="submit" type="submit" value="Save">
                           <input value = "<?php echo $_GET['id']?>" name="id" type="hidden">
                         </div>
                       </form>

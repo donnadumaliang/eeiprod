@@ -33,29 +33,33 @@
           <a href="#!" class="breadcrumb">All Users</a>
         </div>
       </div>
+
       <div class="material-table" id="manage">
           <div class="actions">
             <div class="sorter">
               <!-- Button for Removing Filter -->
               <a href="#" class="waves-effect btn-newuser requestor">Add New User</a>
-              <a href="#modal-batch-upload" class="modal-trigger waves-effect btn-newuser batch">Batch Upload</a>
+              <a href="#modal-batch-upload" class="modal-trigger waves-effect btn-newuser hide-on-med-and-down">Batch Upload</a>
               <a class="dropdown-button btn-sort" data-activates="dropdownIsActive" data-beloworigin="true">Account Status<i id="sort" class="material-icons">arrow_drop_down</i></a>
               <ul id="dropdownIsActive" class="dropdown-content collection">
                 <li><a href="?view=all">All</a></li>
                 <li><a href="?view=active">Active</a></li>
                 <li><a href="?view=deactivated">Deactivated</a></li>
               </ul>
+              <a class="btn-search search-toggle"><span id="search"><i class="material-icons search">search</i></span>Search Here</a>
+              <a class="btn-mobile-search search-toggle"><i class="material-icons search">search</i></a>
+
             </div>
 
           </div>
           <table id="datatable" class="manageUsers">
             <thead>
               <tr>
-                <th>Requestor Name</th>
+                <th class="col-hidereqname">Requestor Name</th>
                 <th class="col-hideuserid">User ID</th>
-                <th>Email Address</th>
-                <th>User Type</th>
-                <th></th>
+                <th class="col-hideemail">Email Address</th>
+                <th class="col-hideusertype">User Type</th>
+                <th class="col-accountstat"></th>
               </tr>
             </thead>
             <tbody>
@@ -90,11 +94,11 @@
                   }
               ?>
                 <tr class='clickable-row' data-href="profile.php?id=<?php echo $row['user_id']?>">
-                      <td class = 'user-row'> <?php echo $row['first_name'] . ' ' . $row['last_name']?>  </td>
+                      <td class = 'user-row col-hidereqname'> <?php echo $row['first_name'] . ' ' . $row['last_name']?>  </td>
                       <td class = 'user-row col-hideuserid'> <?php echo $row['userid']?>   </td>
-                      <td class = 'user-row'> <?php echo $row['email_address']?>  </td>
-                      <td class = 'user-row'> <?php echo $row['user_type']?> </td>
-                      <td class = 'user-row <?php echo $class ?>'></td>
+                      <td class = 'user-row col-hideemail'> <?php echo $row['email_address']?>  </td>
+                      <td class = 'user-row col-hideusertype'> <?php echo $row['user_type']?> </td>
+                      <td class = 'user-row col-accountstat <?php echo $class ?>'></td>
                     </tr>
                   <?php }?>
             </tbody>
@@ -105,7 +109,14 @@
     <!-- New User Form -->
     <form id="new-requestor" name="requestor" method="post">
       <div id="requestor" class="requestort">
-        <span class="table-title" id="form">Add New User</span>
+        <div class="col s12 m12 l12 table-header">
+          <span class="table-title">Add New User</span>
+          <div class="col s12" id="breadcrumb">
+            <a href="javascript:history.back()" class="breadcrumb back">Manage Users</a>
+            <a href="#!" class="breadcrumb">Add New User</a>
+          </div>
+        </div>
+        <div class="ticketform-body">
         <!-- Preloader and it's background. -->
         <div class="preloader-background">
           <div class="activity">
@@ -119,6 +130,7 @@
         </div>
         <!-- End of preloader -->
           <div class="row">
+
               <div class="col s12">
                 <div class="row">
                     <div class="col s12 l6" id="form">
@@ -187,27 +199,32 @@
               </div>
           </div>
         </div>
+      </div>
     </form>
     <!-- Modal for Batch Upload -->
     <div id="modal-batch-upload" class="modal">
       <div class="modal-content">
         <h5>Batch Upload New Users</h5>
+        <p>Download the template here:
+            <a href="<?php echo 'resources/batch-upload_template.csv'?>"><?php echo 'batch-upload_template.csv'?></a><br>
+        </p>
         <form method='post' name="batch" action = "php_processes/batch-upload.php" id="batch-upload" enctype="multipart/form-data">
           <div class="file-field input-field">
             <br>
             <div class="btn-attach">
               <span>SELECT File</span>
-              <input type="file" id="file" name="file"/>
+              <input type="file" id="file" name="file">
             </div>
             <div class="file-path-wrapper">
               <input class="file-path validate" type="text">
             </div>
           </div>
-        <div class="modal-footer">
-          <button class="btn" type="submit" name="submit">Upload</button>
-          <a href="manageUsers.php" class="btn modal-action modal-close">Close</a>
-          </form>
+        <div class="modal-footer" id="unfixed">
+          <button class="btn blue-btn" type="submit" name="submit">Upload</button>
+          <a href="manageUsers.php" class="btn modal-action modal-close red-btn">Close</a>
         </div>
+      </form>
+
       </div>
     </div>
     <!-- HIDDEN FORMS -->

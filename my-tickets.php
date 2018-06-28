@@ -33,9 +33,7 @@
         </div>
       </div>
       <div class="material-table" id="my-tickets">
-
         <div class="actions">
-
             <!-- Button for Removing Filter -->
             <a href="my-tickets.php" class="waves-effect btn-sort">Clear <i id="removefilter" class="material-icons">remove_circle</i></a>
 
@@ -60,7 +58,6 @@
             </ul>
             <a class="btn-search search-toggle"><span id="search"><i class="material-icons search">search</i></span>Search Here</a>
             <a class="btn-mobile-search search-toggle"><i class="material-icons search">search</i></a>
-
         </div>
         <table id="datatable" class="striped">
           <thead>
@@ -77,11 +74,12 @@
             <!-- SORTER -->
             <?php
               $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE ticket_t.user_id = '".$_SESSION['user_id']."'";
-              //no sorter yet
+              $stat = 'none';
               include 'templates/my-tickets-sorter.php';
-
               $result = mysqli_query($db,$query);
+
               while($row = mysqli_fetch_assoc($result)){
+
                  switch($row['ticket_category'])
                   {
                       case("Technicals"):

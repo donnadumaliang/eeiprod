@@ -26,6 +26,7 @@
 <!--richtext editor-->
 <script src="js/jquery.richtext.js"></script>
 
+
 <!-- Import script for DataTables found in tickets.php -->
 <script type="text/javascript" src="js/dataTables.min.js"></script>
 <script type="text/javascript" src="js/datatables.js"></script>

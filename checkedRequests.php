@@ -25,7 +25,7 @@
           <?php
             $id = $_SESSION['user_id'];
             $query = "SELECT COUNT(*) AS count FROM ticket_t LEFT JOIN user_access_ticket_t USING (ticket_id)
-                      WHERE (user_access_ticket_t.checker = $id AND user_access_ticket_t.isChecked = true)";
+                      WHERE (user_access_ticket_t.checker = $id AND ticket_t.ticket_status>=2)";
             $result = mysqli_query($db,$query);
             while($row = mysqli_fetch_assoc($result)) { ?>
               <span class="badge main-count"> <?php echo $row['count'] . " tickets" ?></span>
@@ -39,7 +39,7 @@
             <div class="material-table"  id="my-tickets">
               <div class="actions">
                 <div class="sorter">
-                  <a href="#!" class="waves-effect btn-sort">Remove Filter <i id="removefilter" class="material-icons">remove_circle</i></a>
+                  <a href="#!" class="waves-effect btn-sort">Clear <i id="removefilter" class="material-icons">remove_circle</i></a>
 
                   <!-- Dropdown Trigger for New Ticket -->
                   <a class="dropdown-button btn-sort" data-activates="dropdown3" data-beloworigin="true">Category<i id="sort" class="material-icons">arrow_drop_down</i></a>
@@ -76,7 +76,7 @@
                 <?php
                 $id = $_SESSION['user_id'];
                 $query = "SELECT * FROM ticket_t LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status
-                WHERE (user_access_ticket_t.checker = $id AND user_access_ticket_t.isChecked = true)";
+                WHERE (user_access_ticket_t.checker = $id AND ticket_t.ticket_status >= 2)";
                 $result = mysqli_query($db,$query);?>
                 <?php while($row = mysqli_fetch_assoc($result)){
                   switch($row['ticket_category'])
@@ -96,7 +96,9 @@
                    }
                   ?>
                    <tr class='clickable-row' data-href="details.php?id=<?php echo $row['ticket_id']?>">
-                     <td class="col-sevcat" id="type"><span class="<?php echo $class?>"> <?php echo $row['ticket_category'][0]?></span><p style="margin-top:25px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p></td>
+                     <td class="col-sevcat" id="type">
+                       <span class="<?php echo $class?>"> <?php echo $row['ticket_category'][0]?></span><p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p>
+                     </td>
                      <td class="col-ticketno"> <?php echo $row['ticket_number']?>  </td>
                      <td class="col-hidestatus"> <?php echo $row['ticket_status']?>  </td>
                      <td class="col-title"> <?php echo $row['ticket_title']?>   </td>

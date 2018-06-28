@@ -1,6 +1,7 @@
 <div class="col s12 m12 l12 table-header">
   <span class="table-title"><?php echo date('F')?> Performance Dashboard</span>
-    <a id="addfaq" href="#modal-export" class="modal-trigger btn"><i class="material-icons">file_download</i>&nbsp;&nbsp;Export to Excel</a>
+    <a id="addfaq" href="#modal-export" class="modal-trigger btn hide-on-med-and-down"><i class="material-icons">file_download</i>&nbsp;&nbsp;Export to Excel</a>
+
 </div>
 
 <div id="modal-export" class="modal">
@@ -17,7 +18,7 @@
       </div>
       </div>
     <div class="modal-footer">
-      <input class="modal-action modal-close" type="submit" id="cancel" value="Cancel">
+      <input class="modal-action modal-close" type="button" id="cancel" value="Cancel">
       <input id="return" name="submit" type="submit" value="Create">
       <!-- <button class="btn modal-close" id="" type="submit" name="submit">Create</button> -->
       <!-- <a href="home.php" class="btn modal-action modal-close">Close</a> -->
@@ -29,7 +30,9 @@
   <div class="row">
     <div class="col s12 m12 l12">
       <div class="row" id="kb">
-        <h6 id="dashboard">SLA Ticket Summary</h6>
+        <span><h6 id="dashboard">SLA Ticket Summary</h6><span>
+        <span>
+        </span>
           <div class="col s12 m12 l8">
             <div class="row" id="sev">
               <?php
@@ -64,20 +67,22 @@
                       $sev = 'NULL';
                       break;
                 }
-                $total = "SELECT COUNT(*) as notclosed, (SELECT COUNT(*) FROM ticket_t k LEFT JOIN sla_t s ON s.id = k.severity_level WHERE s.severity_level= '$sev' AND MONTH(date_prepared)=MONTH(CURRENT_DATE())) as sevtotal FROM ticket_t t LEFT JOIN sla_t s ON s.id=t.severity_level WHERE MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND s.severity_level = '$sev' AND t.ticket_status >= 5 AND t.ticket_status < 8";
+                $total = "SELECT COUNT(*) as notclosed, (SELECT COUNT(*) FROM ticket_t k LEFT JOIN sla_t s ON s.id = k.severity_level WHERE s.severity_level= '$sev' AND MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND k.ticket_status >= 5 AND k.ticket_status != 9) as sevtotal FROM ticket_t t LEFT JOIN sla_t s ON s.id=t.severity_level WHERE MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND s.severity_level = '$sev' AND t.ticket_status >= 4 AND t.ticket_status < 8";
                 $result2 = mysqli_query($db,$total);
                 while($row2 = mysqli_fetch_assoc($result2)){
                 ?>
-                  <div class="col s6 m6 l4">
-                    <div class="card horizontal">
+                  <div class="col s6 m4 l4">
+                    <div class="card horizontal tooltipped" data-position="left" data-tooltip="Open Tickets/Total Tickets">
                       <div class="card-stacked">
                         <div class="card-content">
-                          <div class="col s7 m5">
+                          <div class="col l5 hide-on-med-and-down" id="left-align">
                             <p class='<?php echo $class?>' id="sev"><?php echo $row['severity_level']?></p>
                             <p id='sevlevel' class='no-margin'> <?php echo $row['description']  ?> </p>
                           </div>
-                          <div class="col s5 m7 right-align">
-                           <?php echo "<span id='sup'><sup>" .  $row2['notclosed'] . "</sup><span id='over'>/</span></span><span id='sub'><sub>" . $row2['sevtotal'] . " </sub></span>" .
+                          <div class="col s12 m12 l7" id="right-align">
+
+                           <?php echo "<p class='$class' id='sev-mobile-label' hidden>"  .$row['severity_level'] . "</p>" .
+                          "<span id='sup'><sup>" .  $row2['notclosed'] . "</sup><span id='over'>/</span></span><span id='sub'><sub>" . $row2['sevtotal'] . " </sub></span>" .
                            "<p class='no-margin' id='fraction-label'>tickets open</p>"; ?>
                            </div>
                         </div>
@@ -86,22 +91,23 @@
                   </div>
                 <?php }}; ?>
 
-                <div class="col s6 m6 l4">
+                <div class="col s6 m4 l4">
                   <div class="card horizontal">
                     <div class="card-stacked">
                       <div class="card-content">
-                        <div class="col s7 m5">
-                          <p class='unassigned' id="sev">Unassigned</p>
+                        <div class="col l5 hide-on-med-and-down" id="left-align">
+                          <p class='unassigned' id="sev">N/A</p>
                           <p id='sevlevel' class='no-margin'>For review </p>
                         </div>
-                        <?php $totalunassigned = "SELECT COUNT(*) as unassigned, (SELECT COUNT(*) FROM ticket_t t WHERE t.ticket_status >= 5 and t.ticket_status <=8 OR (t.ticket_status = 1 AND t.ticket_type='Service') OR (t.ticket_status=3 AND t.ticket_type='User Access')) as totaltickets FROM ticket_t t WHERE(t.ticket_status = 1 AND t.ticket_type = 'Service') OR (t.ticket_status = 3 AND t.ticket_type='User Access')";?>
+                        <?php $totalunassigned = "SELECT COUNT(*) as unassigned, (SELECT COUNT(*) FROM ticket_t t WHERE (t.ticket_status > 1 AND t.ticket_type='Service') OR (t.ticket_status >=3 AND t.ticket_type='User Access')) as totaltickets FROM ticket_t t WHERE(t.ticket_status = 1 AND t.ticket_type = 'Service') OR (t.ticket_status = 3 AND t.ticket_type='User Access')";?>
                         <?php
                         $result2 = mysqli_query($db,$totalunassigned);
                         while($row2 = mysqli_fetch_assoc($result2)){ ?>
 
-                        <div class="col s5 m7 right-align">
-                         <?php echo "<span id='sup'><sup>" .  $row2['unassigned'] . "</sup><span id='over'>/</span></span><span id='sub'><sub>" . $row2['totaltickets'] . " </sub></span>" .
-                         "<p class='no-margin' id='fraction-label'>Unassigned Left</p>"; }?>
+                        <div class="col s12 m12 l7" id="right-align">
+                         <?php echo "<p class='unassigned' id='sev-mobile-label' hidden>N/A</p>" .
+                         "<span id='sup'><sup>" .  $row2['unassigned'] . "</sup><span id='over'>/</span></span><span id='sub'><sub>" . $row2['totaltickets'] . " </sub></span>" .
+                         "<p class='no-margin' id='fraction-label'>Tickets Left</p>"; }?>
                          </div>
                       </div>
                     </div>
@@ -113,17 +119,22 @@
                 <h6 id="dashboard">Ticket Count Per Month</h6>
                 <canvas id="mycanvas"></canvas>
               </div>
+                <div class="col s12 m5 l5 overdue" id="chart">
+                  <h6 id="dashboard" ><?php echo date('F')?> Overdue Tickets Per SLA</h6>
+                  <canvas id="mycanvas3"></canvas>
+                </div>
+
             </div>
           </div>
-          <div class="col s12 m12 l4">
+          <div class="col s6 m6 l4">
             <div class="col s12 m12 l12">
               <div class="card horizontal gradient-45deg-green-teal tooltipped" data-position="left" data-delay="50" data-tooltip="Percentage of tickets resolved/closed within SLA">
                 <div class="card-stacked">
                 <div class="card-content">
-                  <div class="col s7 m7 left-align">
+                  <div class="col s3 m3 left-align">
                     <i class="material-icons background-round mt-5">show_chart</i>
                   </div>
-                  <div class="col s5 m5 right-align white-text">
+                  <div class="col s9 m9 right-align white-text">
                     <?php
                     //percentage of tickets resolved following their severity level
 
@@ -141,17 +152,17 @@
             </div>
           </div>
 
-          <div class="col s12 m12 l4">
+          <div class="col s6 m6 l4">
             <div class="col s12 m12 l12">
               <div class="card horizontal gradient-45deg-amber-amber">
                 <div class="card-stacked">
                 <div class="card-content">
-                  <div class="col s7 m7 left-align">
+                  <div class="col s3 m3 left-align">
                     <i class="material-icons background-round mt-5">report</i>
                   </div>
-                  <div class="col s5 m5 right-align white-text">
+                  <div class="col s9 m9 right-align white-text">
                     <?php
-                      $query = "SELECT COUNT(*) as count FROM ticket_t WHERE date_required < now() AND MONTH(date_prepared)=MONTH(CURRENT_DATE())";
+                      $query = "SELECT COUNT(*) as count FROM ticket_t WHERE  (date_required < resolution_date OR (date_required < now() AND ticket_status <7)) AND MONTH(date_prepared)=MONTH(CURRENT_DATE())";
                       $result = mysqli_query($db,$query);
 
                       while($row = mysqli_fetch_assoc($result)){
@@ -167,15 +178,15 @@
           </div>
           <div class="col s12 m12 l4">
             <div class="col s6 m6 l6">
-              <div class="card horizontal gradient-45deg-light-blue-cyan">
+              <div class="card horizontal gradient-45deg-light-blue-cyan tooltipped" data-position="left" data-delay="50" data-tooltip="Pending, Assigned & Resolved Tickets">
                 <div class="card-stacked">
                 <div class="card-content">
-                  <div class="col s7 m7 left-align">
+                  <div class="col s3 m3 left-align">
                     <i class="material-icons background-round mt-5">lock_open</i>
                   </div>
-                  <div class="col s5 m5 right-align white-text">
+                  <div class="col s9 m9 right-align white-text">
                     <?php
-                      $query = "SELECT COUNT(*) AS count FROM ticket_t WHERE MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND ticket_status < 8 and ticket_status >= 5";
+                      $query = "SELECT COUNT(*) AS count FROM ticket_t WHERE MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND (ticket_status != 8 AND ticket_status != 9) AND ((ticket_type='Service' AND ticket_status >= 1 ) OR (ticket_type='User Access' AND ticket_status >= 4))";
                       $result = mysqli_query($db,$query);
 
                       while($row = mysqli_fetch_assoc($result)){
@@ -188,13 +199,14 @@
               </div>
               </div>
             </div>
-            <div class="card horizontal gradient-45deg-light-blue-cyan">
+            <div class="col s6 m6 l6">
+            <div class="card horizontal gradient-45deg-light-blue-cyan tooltipped" data-position="left" data-tooltip="Closed Tickets">
               <div class="card-stacked">
               <div class="card-content">
-                <div class="col s7 m7 left-align">
+                <div class="col s3 m3 left-align">
                   <i class="material-icons background-round mt-5">lock_outline</i>
                 </div>
-                <div class="col s5 m5 right-align white-text">
+                <div class="col s9 m9 right-align white-text">
                   <?php
                     $query = "SELECT COUNT(*) AS count FROM ticket_t WHERE MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND ticket_status = 8";
                     $result = mysqli_query($db,$query);
@@ -204,9 +216,35 @@
                        "<p class='dashboard no-margin'>" . "Closed" . "</p>";
                    };
                   ?>
-                </div></div>
+                </div>
+              </div>
               </div>
             </div>
+          </div>
+          <div class="col s12 m12 l12">
+            <div class="card horizontal gradient-45deg-light-blue-cyan">
+              <div class="card-stacked">
+              <div class="card-content">
+                <div class="col s3 m3 left-align">
+                  <i class="material-icons background-round mt-5">cancel</i>
+                </div>
+                <div class="col s9 m9 right-align white-text">
+                  <?php
+                    $query = "SELECT COUNT(*) AS count FROM ticket_t WHERE MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND ticket_status = 9 OR ticket_status = 4";
+                    $result = mysqli_query($db,$query);
+
+                    while($row = mysqli_fetch_assoc($result)){
+                       echo "<h4 id ='dashboard'>" . $row['count'] . "</h4>" .
+                       "<p class='dashboard no-margin'>" . "Cancelled/Rejected" . "</p>";
+                   };
+                  ?>
+               </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m12 l4">
             <div class="margin-top-dashboard">
             <ul id="projects-collection" class="collection z-depth-1">
               <li class="collection-item avatar">
@@ -217,7 +255,7 @@
             <?php
             $db = mysqli_connect("localhost", "root", "", "eei_db");
 
-              $query = "SELECT ticket_category, count(ticket_id) as count FROM ticket_t WHERE ticket_category IS NOT NULL group by ticket_category UNION SELECT 'N/A', count(ticket_id) FROM ticket_t WHERE ticket_category IS NULL AND MONTH(date_prepared)=MONTH(CURRENT_DATE())";
+              $query = "SELECT ticket_category, count(ticket_id) as count FROM ticket_t WHERE ticket_category IS NOT NULL OR (ticket_t.ticket_category = 'Access' AND ticket_t.ticket_status >= 3) group by ticket_category UNION SELECT 'N/A', count(ticket_id) FROM ticket_t t WHERE t.ticket_category IS NULL AND MONTH(date_prepared)=MONTH(CURRENT_DATE()) AND ((t.ticket_status>= 1 AND t.ticket_type='Service') OR (t.ticket_status>=3 AND t.ticket_type='User Access'))";
               $result = mysqli_query($db,$query);
 
               while($row = mysqli_fetch_assoc($result)){
@@ -262,7 +300,11 @@
             <?php } ?>
           </ul>
           </div>
+          <div class="col s12 m5 l5 overdue" id="chart">
+            <h6 id="dashboard"><?php echo date('F')?> Overdue Tickets</h6>
+            <canvas id="mycanvas2"></canvas>
+          </div>
       </div>
     </div>
+    </div>
   </div>
-</div>

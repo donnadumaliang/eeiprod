@@ -7,6 +7,9 @@ $db = mysqli_connect("localhost", "root", "", "eei_db");
 
 $request_title = mysqli_real_escape_string($db, $_POST['title']);
 $request_details = mysqli_real_escape_string($db, $_POST['request_details']);
+$asset = mysqli_real_escape_string($db, $_POST['asset_no']);
+$rc = mysqli_real_escape_string($db, $_POST['rc_no']);
+$department = mysqli_real_escape_string($db, $_POST['department']);
 
 date_default_timezone_set('Asia/Manila');
 
@@ -33,15 +36,29 @@ $w = $dt->format('N');
 $w2 = $dt2day->format('N');
 
 if (strtotime($time)>=strtotime('15:00:00')) {
-  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id) VALUES(DEFAULT, '$request_title', 'Service', '1', '$datet', '{$_SESSION['user_id']}')";
+  if ($rc!=NULL) {
+  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id,dept_proj, rc_no) VALUES(DEFAULT, '$request_title', 'Service', '1', '$datet', '{$_SESSION['user_id']}','$department','$rc')";
+  }else{
+  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id,dept_proj) VALUES(DEFAULT, '$request_title', 'Service', '1', '$datet', '{$_SESSION['user_id']}','$department')";
+
+  }
 }
 
 elseif(strtotime($time)<strtotime('08:00:00')) {
-  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id) VALUES(DEFAULT, '$request_title', 'Service', '1', '$dateToday', '{$_SESSION['user_id']}')";
+  if ($rc!=NULL) {
+  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id,dept_proj, rc_no) VALUES(DEFAULT, '$request_title', 'Service', '1', '$dateToday', '{$_SESSION['user_id']}','$department', '$rc')";
+  } else{
+    $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id,dept_proj) VALUES(DEFAULT, '$request_title', 'Service', '1', '$dateToday', '{$_SESSION['user_id']}','$department')";
+  }
 }
 
 else {
-  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id) VALUES(DEFAULT, '$request_title', 'Service', '1', '$curDate', '{$_SESSION['user_id']}')";
+  if ($rc!=NULL) {
+  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id,dept_proj, rc_no) VALUES(DEFAULT, '$request_title', 'Service', '1', '$curDate', '{$_SESSION['user_id']}','$department', '$rc')";
+  }else{
+  $query1 = "INSERT INTO ticket_t (ticket_id, ticket_title, ticket_type, ticket_status, date_prepared, user_id,dept_proj) VALUES(DEFAULT, '$request_title', 'Service', '1', '$curDate', '{$_SESSION['user_id']}','$department')";
+
+  }
 }
 
 if (!mysqli_query($db, $query1))
@@ -62,7 +79,8 @@ if (!mysqli_query($db, $query2))
 }
 
 //INSERT to service_ticket_t
-$query3 = "INSERT INTO service_ticket_t (ticket_id, request_details) VALUES('$latest_id', '$request_details')";
+$query3 = "INSERT INTO service_ticket_t (ticket_id, request_details,asset_no) VALUES('$latest_id', '$request_details','$asset')";
+
 if (!mysqli_query($db, $query3))
 {
   die('Error' . mysqli_error($db));
@@ -92,14 +110,15 @@ echo json_encode($row['ticket_number']);
 //nav notification
 $sql = "SELECT user_id from user_t where user_type= 'Administrator'";
 $result2= mysqli_query($db, $sql);
-$row2=mysqli_fetch_array($result2,MYSQLI_ASSOC);
-$adminId = $row2['user_id'];
-
-$notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead,timestamp) VALUES(DEFAULT, '$latest_id','$adminId','Ticket No. $row[ticket_number] needs your review',0,now())";
-if (!mysqli_query($db, $notifSql))
-{
-  die('Error' . mysqli_error($db));
+while($row2 = mysqli_fetch_assoc($result2)){
+$adminId  = $row2['user_id'];
+  $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead,timestamp) VALUES(DEFAULT, '$latest_id','$adminId','Ticket No. $row[ticket_number] needs your review',0,now())";
+  if (!mysqli_query($db, $notifSql))
+  {
+    die('Error' . mysqli_error($db));
+  }
 }
+
 mysqli_close($db);
 
 ?>

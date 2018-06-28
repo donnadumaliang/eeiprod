@@ -24,7 +24,7 @@
             $db = mysqli_connect("localhost", "root", "", "eei_db");
 
             $query = "SELECT COUNT(t.ticket_id) AS count FROM ticket_t t LEFT JOIN user_t r ON t.user_id = r.user_id LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE stat.ticket_status='Pending' AND t.user_id = '".$_SESSION['user_id']."'";
-            
+
             $result = mysqli_query($db,$query); ?>
 
             <?php while($row = mysqli_fetch_assoc($result)){ ?>
@@ -61,7 +61,7 @@
               <li><a href="?view=sev5">SEV5</a></li>
             </ul>
             <a class="btn-search search-toggle"><span id="search"><i class="material-icons search">search</i></span>Search Here</a>
-
+            <a class="btn-mobile-search search-toggle"><i class="material-icons search">search</i></a>
           </div>
         </div>
         <table id="datatable" class="striped">
@@ -81,6 +81,7 @@
                 include 'templates/my-tickets-sorter.php';
 
                 $result = mysqli_query($db,$query);
+
                 while($row = mysqli_fetch_assoc($result)){
                    switch($row['ticket_category'])
                     {

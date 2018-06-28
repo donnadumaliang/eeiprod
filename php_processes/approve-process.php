@@ -31,14 +31,13 @@ $row= mysqli_fetch_array($result,MYSQLI_ASSOC);
 
 $sql = "SELECT user_id from user_t where user_type= 'Administrator'";
 $result2= mysqli_query($db, $sql);
-$row2=mysqli_fetch_array($result2,MYSQLI_ASSOC);
-$adminId = $row2['user_id'];
-
-//nav notification
-$notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead) VALUES(DEFAULT, $ticketID, $adminId,'Ticket No. $row[ticket_number] has been approved',0)";
-if (!mysqli_query($db, $notifSql))
-{
-  die('Error' . mysqli_error($db));
+while($row2 = mysqli_fetch_assoc($result2)){
+$adminId  = $row2['user_id'];
+  $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead,timestamp) VALUES(DEFAULT, '$ticketID','$adminId','Ticket No. $row[ticket_number] needs your review',0,now())";
+  if (!mysqli_query($db, $notifSql))
+  {
+    die('Error' . mysqli_error($db));
+  }
 }
 
 // $errorMsg = mysqli_error($db);

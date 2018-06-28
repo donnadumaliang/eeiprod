@@ -18,22 +18,45 @@ switch ((isset($_GET['view']) ? $_GET['view'] : ''))
 switch ((isset($_GET['view']) ? $_GET['view'] : ''))
 {
     case ("sev1"):
-      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='SEV1' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
-      break;
+      $sev = 'SEV1';
+      if($stat != 'none'){
+      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+    } elseif ($stat == 'none'){
+      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE sev.severity_level = '$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+    }
+    break;
 
     case ("sev2"):
-      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='SEV2' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
-      break;
+    $sev = 'SEV2';
+    if($stat != 'none'){
+    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+    } elseif ($stat == 'none'){
+      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE sev.severity_level = '$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+    }
+    break;
 
     case ("sev3"):
-      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='SEV3' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
-      break;
-
+    $sev = 'SEV3';
+    if($stat != 'none'){
+    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+  } elseif ($stat == 'none'){
+    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE sev.severity_level = '$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+  }
+break;
     case ("sev4"):
-      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='SEV4' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
-      break;
-
+    $sev = 'SEV4';
+    if($stat != 'none'){
+    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+    } elseif ($stat == 'none'){
+      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE sev.severity_level = '$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+    }
+break;
     case ("sev5"):
-      $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='SEV5' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
-      break;
+    $sev = 'SEV5';
+    if($stat != 'none'){
+    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE stat.ticket_status = '$stat' AND sev.severity_level='$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+  } elseif ($stat == 'none'){
+    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE sev.severity_level = '$sev' AND ticket_t.user_id = '".$_SESSION['user_id']."'";
+  }
+  break;
 } ?>

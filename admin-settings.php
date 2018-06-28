@@ -42,7 +42,7 @@
                   <tr>
 
                     <td> <div class = 'information'><?php echo $row['severity_level']?></div></td>
-                    <td> <div class = 'information'><?php echo $row['description']?></div> </td>
+                    <td> <div class = 'information sla'><?php echo $row['description']?></div> </td>
                     <td><div class = 'information sla'><?php echo $row['resolution_time']?></div></td>
 
                     <td class = 'info'><input id="<?php echo $row['id'] ?>" type="button" name="edit" value="Edit" class="edit_sla"><input id="<?php echo $row['id'] ?>" type="button" name="save" value="Save" class="save_sla" hidden>

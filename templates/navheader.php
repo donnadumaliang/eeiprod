@@ -23,12 +23,75 @@
            window.location="details.php?id=" + ticketNo;
          }
     });
-}
+  }
+  var count ;
+  var userid = '<?php echo $_SESSION['user_id'] ?>';
+  var interval = 1000;  // 1000 = 1 second, 3000 = 3 seconds
+  function doAjax() {
+      $.ajax({
+              type: 'POST',
+              url: 'php_processes/count-notif.php',
+              data: {userid:userid},
+              async: false,
+              dataType: "json",
+              success: function (data) {
+                      // Schedule the next
+                      count = data;
+                }
+        });
+    }
+
+    setInterval(doAjax, interval);
+
+    var title = document.title;
+        function changeTitle() {
+
+            var newTitle = '(' + count + ') ' + title;
+            document.title = newTitle;
+            if ( document.getElementById('notif').innerHTML!= null) {
+             document.getElementById('notif').innerHTML = count;
+            }
+            else  {
+              window.onload = function(){
+                  document.getElementById("notif").innerHTML = "Why is this null?";
+            }
+
+      }
+    }
+    function newUpdate() {
+      update = setInterval(changeTitle, 1000);
+    }
+    function newwin() {
+      $.ajax({
+              type: 'POST',
+              url: 'php_processes/update-count.php',
+              data: {userid:userid},
+                  async: false,
+        });
+        count =0;
+      }
+
+
+  document.body.onload = newUpdate();
+
+  var interval2 = 1000;  // 1000 = 1 second, 3000 = 3 seconds
+  function autoClose(){
+      $.ajax({
+              type: 'POST',
+              url: 'php_processes/autoclose.php',
+              data: {userid:userid},
+              async: false,
+        });
+    }
+
+    setInterval(autoClose, interval2);
+
+
 </script>
 <!-- <header class="page-topbar"> -->
   <nav  class="color">
      <div class="nav-wrapper">
-       <a href="#!" class="brand-logo"><img class="company_logo" src="img/eei-logo.jpg"></a><span class="name">EEI Corporation Help Desk</span>
+       <a href="#!" class="brand-logo"><img class="company_logo" src="img/eei-logo.jpg"></a><span class="name">EEI Corporation Service Desk</span>
        <ul class="right">
           <!-- Dropdown Trigger for New Ticket -->
           <li><a class="dropdown-button btn-invert hide-on-med-and-down" data-activates="dropdown2" data-beloworigin="true">New Ticket<i class="tiny material-icons" id="add-ticket">add</i></a></li>
@@ -39,9 +102,9 @@
           </ul>
 
         <!-- Notification Bell Button -->
-        <li><a  class="dropdown-button " href="#!" data-activates="dropdownNotifications" data-beloworigin="true"><i class="small material-icons">notifications_none</i>
-          <?php if($count>0) { ?>
-           <span class="new badge" id="notif"><?php echo $count; ?></span>
+        <li><a  class="dropdown-button " onclick='newwin()' href="#!" data-activates="dropdownNotifications" data-beloworigin="true"><i class="small material-icons">notifications_none</i>
+          <?php if($count>=0) { ?>
+           <span class="new badge" id="notif"></span>
            <?php }?>
           <div id='notification_count'></div></a></li>
         <!-- Dropdown Structure -->
@@ -56,9 +119,9 @@
           $result=mysqli_query($db, $sql);
           $response='';
           while($row=mysqli_fetch_array($result)) {
-            $id = $row['notification_id'];
-            $sql3="UPDATE notification_t SET isSeen = 1 WHERE notification_id = '$id'";
-            $result3=mysqli_query($db, $sql3);
+            #$id = $row['notification_id'];
+            #$sql3="UPDATE notification_t SET isSeen = 1 WHERE notification_id = '$id'";
+            #$result3=mysqli_query($db, $sql3);
           ?>
             <li class="dropdown3content">
               <a onclick="read(<?php echo $row['notification_id']?>)"><?php echo $row['notification_description']?><br><span class="datediff-gray"><?php echo $row['datediff'] ?></span></a>

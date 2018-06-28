@@ -62,6 +62,7 @@
                      include 'templates/review-tickets-sorter.php';
 
                     $result = mysqli_query($db,$query);
+
                      while($row = mysqli_fetch_assoc($result)){
                         switch($row['ticket_category'])
                          {

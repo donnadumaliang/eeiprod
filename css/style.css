@@ -9,9 +9,11 @@
         url(../fonts/material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'),
         url(../fonts/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
 }
-
+.col-tickettype{
+  width: 10%;
+}
 div#tdetails{
-  overflow-y: scroll;
+  overflow: scroll;
   max-height: 500px;
 }
 .material-icons {
@@ -70,7 +72,7 @@ a#account_circle:hover{
   cursor: default;
 }
 
-/* a.help-support{
+ /* a.help-support{
   bottom: 8%;
 position: absolute;
 font-weight: 400;
@@ -288,6 +290,10 @@ div#login{
     margin: 0 auto
 }
 
+div#logs{
+  display: inline-grid;
+}
+
 /* #login-container{
   width: 30%;
   padding-top: 35px;
@@ -304,6 +310,15 @@ div#knowledge-base{
   padding: 40px;
   text-align: center;
   background-color: white;
+  height: 100vh;
+}
+div#help-support{
+  padding: 20px 40px;
+  background-color: white;
+}
+div#hs{
+  display: inline-flex;
+  margin-bottom: 20px;
 }
 div#knowledge-base-body{
   background-color: white;
@@ -459,11 +474,25 @@ a.user-name{
   padding: 0px!important;
   margin-left: 0px!important;
 }
-
-
+.col-hidereqname{
+  width: 25%;
+}
+.col-hideemail{
+  width: 20%;
+}
+.col-hideuserid{
+  width: 20%;
+}
+.col-hideusertype{
+  width: 20%;
+}
+.col-accountstat{
+  width: 10%;
+}
 div.profile-body{
   background-color: white;
   padding: 10px 30px;
+  height: 100vh;
 }
 span.type{
   font-size: 14px;
@@ -505,6 +534,7 @@ display: none;
 .side-nav li > a{
   color: white;
   padding: 0 22px;
+      width: 100%;
 }
 
 .side-nav li > a > i.material-icons{
@@ -742,6 +772,7 @@ div#datatable_wrapper{
 div.material-table {
   position: relative;
   background-color: white;
+  height: 100vh;
 }
 div.material-table .hiddensearch {
   border-bottom: solid 1px #DDDDDD;
@@ -751,9 +782,10 @@ div.material-table .hiddensearch {
 
 div.material-table .hiddensearch input {
   margin: 0;
-  padding-left: 20px;
   border: transparent 0 !important;
   height: 48px;
+  padding-left: 3%;
+  width: 97%;
   color: rgba(0, 0, 0, .84);
 }
 
@@ -763,6 +795,7 @@ div.material-table .hiddensearch input:active {
 
 div.material-table table {
   table-layout: fixed;
+  background-color: white;
 }
 
 div.material-table .table-header {
@@ -856,6 +889,8 @@ div.material-table .table-footer .material-pagination {
   margin: 0;
 }
 
+
+
 div.material-table .table-footer .material-pagination li:first-child {
   margin-right: 24px;
 }
@@ -923,14 +958,14 @@ cursor: pointer;
 padding-top: 10px;
 padding-left: 10px;
 }
-span.table-title#form:after{
+/* span.table-title#form:after{
   display: block;
   margin-top: 10px;
   border-bottom: 2px solid #283061;
   margin-left: 18px;
   content: '';
   margin-bottom: -40px;
-}
+} */
 
 span#faq{
   font-size: 20px;
@@ -1079,6 +1114,7 @@ div#request-form-row6 {
 
 div#request-form-row7{
   margin-top: -12px;
+  margin-left: 10px;
 }
 
 div#request-form-row9 {
@@ -1106,7 +1142,6 @@ div#request-form-row3 {
 }
 div#request-form-row4 {
     margin-bottom: 15px;
-    margin-top: 10px;
     padding: 0 10px 0 10px;
 
 }
@@ -1155,7 +1190,7 @@ border-radius:2px;
 
 i#kb{
   vertical-align: middle;
-      margin-top: 4%;
+      margin-top: 5px;
       margin-right: 7px;
       font-size: 18px;
     }
@@ -1174,6 +1209,7 @@ div#chart{
   background-color: white;
   margin-top: 10px;
   padding-left: 10px;
+  margin-bottom: 20px;
   height: max-content;
   padding-top: 20px;
   padding-right: 20px;
@@ -1237,11 +1273,11 @@ font-size: 12px;
   float: right;
   color: white;
   font-size: 14px;
+  border-radius: 2px;
 }
 
 div#request-form-controls {
   margin-top: 50px;
-  float: right;
   margin-right: 10px;
 }
 #btn-cancel{
@@ -1252,6 +1288,7 @@ div#request-form-controls {
   float: right;
   color: white;
   font-size: 14px;
+  border-radius: 2px;
 }
 
 div#sidenav{
@@ -1320,7 +1357,7 @@ padding-right: 50px;
 
 span#notif.new.badge{
   padding: 3px 6px 3px 6px;
-      display: initial;
+      display: none;
       font-size: 11px;
       margin-left: -10px;
       border-radius: 20px;
@@ -1344,6 +1381,11 @@ i#profile {
   z-index: 1;
 }
 
+#service-details td:first-child{
+  width: 50%;
+  vertical-align: top;
+  font-weight: 500;
+}
 #profile td:first-child{
   text-transform: uppercase;
   font-weight: 500;
@@ -1382,7 +1424,7 @@ border-radius: 10px;
 float: right;
 margin-right: 12px;
 }
-span.ticket_cat_blank {
+span.ticket_cat_blank::after {
   min-width: 1.7rem;
   padding: 0 6px;
   text-align: center;
@@ -1393,8 +1435,9 @@ span.ticket_cat_blank {
   float: left;
   font-weight: bolder;
   font-size: 0.8rem;
-  color: #fff;
-  background-color: transparent;
+  color: black;
+  background-color: lightgray;
+  content: "?";
   border-radius: 20%;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -1576,9 +1619,15 @@ i#dashboard{
     font-weight: 500;
   }
 
-.swal-button, .swal-button--cancel{
-   background-color: #4b75ff!important;
+ .swal-button--cancel{
+   background-color: #F44336;
    color: white;
+   border-radius: 2px;
+}
+.swal-button--confirm{
+  background-color: #4b75ff!important;
+  color: white;
+  border-radius: 2px;
 }
 
 form#service, form#access, form#new-requestor{
@@ -1838,10 +1887,6 @@ span#db-panel-label{
   font-weight: bold;
 }
 
-span#datediff{
-  float: right;
-color: #d2d2d2;
-}
 
 span.datediff-gray{
   color: #c7c7c7;
@@ -1971,16 +2016,23 @@ div#tagent-info {
   i#sort{
     padding: 0px;
     line-height: 0;
-    vertical-align: super;
+    vertical-align: middle;
     color: #a9abae;
     display: -webkit-inline-box;
 }
 
+input#web-save{
+  padding: 8px 15px;
+}
+
+.modal-footer#unfixed{
+  padding: 15px 20px!important;
+}
 i#removefilter{
   padding: 0px;
   line-height: 0;
   font-size: 14px;
-  vertical-align: super;
+  vertical-align: middle;
   color: #a9abae;
   display: -webkit-inline-box;
 }
@@ -2003,6 +2055,11 @@ i#removefilter{
 
 .technicals-tickets{
   display: none;
+}
+
+div#technicals-card:hover, div#access-card:hover, div#network-card:hover{
+  background-color: #f5f5f5;
+  cursor: pointer;
 }
 
 input#details-back {
@@ -2123,9 +2180,9 @@ span.badge.new{
 span.badge.new.stat {
     background-color: #2c2f34!important;
 }
-    .side-nav>li:last-child {
+    /* .side-nav>li:last-child {
         bottom: 8%;
-      }
+      } */
     input#check, input.btn-upload, input#approve{
       background-color: #4b75ff;
       color: white;
@@ -2218,7 +2275,7 @@ box-shadow: none!important;
 } */
 
 div#ticket-properties {
-    padding: 20px 20px 10px 30px;
+    padding: 25px 20px 10px 30px;
     border-radius: 4px;
     background-color: #fff4d6;
   }
@@ -2282,6 +2339,11 @@ div#comment_logs{
   width: 70%;
 }
 
+.active-editprofile{
+  border: 1px solid #aeaeae;
+  border-radius: 3px;
+  width: 70%;
+}
 
 div#comment_logs.alog {
     overflow-y: scroll;
@@ -2344,7 +2406,7 @@ div.header{
 }
 
 div.actions{
-  padding: 10px 30px;
+  padding: 10px 20px;
 }
 
 
@@ -2372,7 +2434,7 @@ div.actions{
   }
 
   i.material-icons.search {
-    font-size: 16px;
+    font-size: 18px;
 }
 
   .btn-newuser:hover{
@@ -2388,7 +2450,7 @@ div.actions{
   .btn-sort:hover > i#sort{
     padding: 0px;
     line-height: 0;
-    vertical-align: super;
+    vertical-align: middle;
     color: white;
     display: -webkit-inline-box;
 }
@@ -2397,7 +2459,7 @@ div.actions{
   padding: 0px;
   line-height: 0;
   font-size: 14px;
-  vertical-align: super;
+  vertical-align: middle;
   color: white;
   display: -webkit-inline-box;
 }
@@ -2448,11 +2510,15 @@ height: 100vh;
 a.mobile-search{
   display: none;
 }
-
+div.ticketform-body{
+background-color: white;
+height: 100vh;
+padding: 10px 15px;
+}
 div#service, div#access, div#requestor, div#batch{
   display: block;
-  background-color: white;
-  padding: 25px;
+  /* background-color: white; */
+  /* padding: 25px; */
   height: 100vh;
 }
 .dropdown3content{
@@ -2473,6 +2539,7 @@ input#cancel:disabled{
 }
 ::-webkit-scrollbar {
 width: 7px;
+height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -2488,6 +2555,10 @@ background: #999;
 }
 .card .card-content{
   text-align: center;
+}
+
+.card:hover{
+  cursor: pointer;
 }
 
 div.manage-actions{
@@ -2507,6 +2578,7 @@ div#home{
 
 div#kb {
     margin-top: -8px;
+    min-height: 145px!important;
 }
 /*
 .card:hover {
@@ -2624,7 +2696,7 @@ input#reactivate {
   border: 1px solid;
   color: #ffffff;
   font-size: 14px;
-  margin: 15px 5px;
+      margin: 15px 5px;
   text-transform: none;
 }
 
@@ -2638,12 +2710,15 @@ input#reactivate {
   color: white;
   border: 1px solid #c54239;
   border-radius: 2px;
+  font-size: 12px;
+
 }
 .blue-btn, .blue-btn:hover{
   background-color: #4b75ff;
   color: white;
   border: 1px solid #3757bf;
   border-radius: 2px;
+  font-size: 12px;
 }
 
 .orange-btn, .orange-btn:hover{
@@ -2651,6 +2726,12 @@ input#reactivate {
   color: white;
   border: 1px solid #e1ad0e;
   border-radius: 2px;
+  font-size: 12px;
+
+}
+
+button#mobile-save{
+  display: none;
 }
 
 input#deactivate {
@@ -2768,6 +2849,15 @@ span#faq-title{
 }
 .arrow-up {
 
+}
+div#right-align{
+  text-align: right;
+  padding-right: 0px;
+}
+
+div#left-align{
+  text-align: left;
+  padding-left: 0px;
 }
 p#sev{
   text-align: left;

@@ -1,8 +1,12 @@
 <div class="sorter">
   <!-- Button for Removing Filter -->
-  <a href="review-incoming-tickets.php" class="waves-effect btn-sort">Remove Filter <i id="removefilter" class="material-icons">remove_circle</i></a>
 
-  <?php if($row['user_type'] == "Requestor"){ ?>
+
+  <a href="?" class="waves-effect btn-sort">Clear <i id="removefilter" class="material-icons">remove_circle</i></a>
+  <a class="btn-mobile-search search-toggle"><i class="material-icons search">search</i></a>
+
+
+  <?php if($_SESSION['user_type'] == "Requestor"){ ?>
 
   <!-- Dropdown Trigger for Category Sorter -->
   <a class="dropdown-button btn-sort" data-activates="categories" data-beloworigin="true">Category<i id="sort" class="material-icons">arrow_drop_down</i></a>
@@ -15,6 +19,18 @@
 
 <?php } ?>
 
+<?php if($_SESSION['user_type'] == "Administrator"){ ?>
+
+<!-- Dropdown Trigger for Category Sorter -->
+<a class="dropdown-button btn-sort" data-activates="categories" data-beloworigin="true">Ticket Type<i id="sort" class="material-icons">arrow_drop_down</i></a>
+<!-- Dropdown Structure -->
+<ul id="categories" class="dropdown-content collection">
+  <li><a href="?view=all" class="all">All</a></li>
+  <li><a href="?view=service">Service</a></li>
+  <li><a href="?view=user_access">User Access</a></li>
+</ul>
+<?php } ?>
+
   <!-- Dropdown Trigger for Severity Sorter -->
   <a class="dropdown-button btn-sort" data-activates="sevlevels" data-beloworigin="true">Severity<i id="sort" class="material-icons">arrow_drop_down</i></a>
   <!-- Dropdown Structure -->
@@ -25,5 +41,7 @@
     <li><a href="?view=sev4">SEV4</a></li>
     <li><a href="?view=sev5">SEV5</a></li>
   </ul>
+
   <a class="btn-search search-toggle"><span id="search"><i class="material-icons search">search</i></span>Search Here</a>
+  <!-- <a class="btn-mobile-search search-toggle"><i class="material-icons search">search</i></a> -->
 </div>

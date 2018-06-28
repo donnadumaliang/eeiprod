@@ -29,47 +29,68 @@ $result = mysqli_query($db, $query);
 //   echo "ERROR: could not execute $query." . mysqli_error($db);
 //
 // }
+//notif table's ticket number
+$sql = "SELECT ticket_number from ticket_t WHERE ticket_id = $id";
+$row3=mysqli_fetch_array(mysqli_query($db, $sql),MYSQLI_ASSOC);
+$ticketNo = $row3['ticket_number'];
+
 
 
 if ($category=='Technicals') {
-    $query3 = "SELECT user_id, CONCAT(first_name, ' ', last_name) as mgr from user_t where user_type = 'Technicals Group Manager'";
+    $query3 = "SELECT user_id, CONCAT(first_name, ' ', last_name) as mgr from user_t where user_type = 'Technicals Group Manager' AND isActive = true";
     $result = mysqli_query($db, $query3);
-    $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-    $mgrId= $row['user_id'];
-    $mgrname = $row['mgr'];
-    $query2 = "UPDATE ticket_t SET it_group_manager_id= '$mgrId'   ,  date_assigned = NOW() WHERE ticket_id = $id";
+    while($row = mysqli_fetch_assoc($result)){
+      $mgr = $row['user_id'];
+      $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead, timestamp) VALUES(DEFAULT, $id,'$mgr','$ticketNo has been assigned to you',0, now())";
+
+      if (!mysqli_query($db, $notifSql))
+      {
+        die('Error' . mysqli_error($db));
+      }
+    }
+    $query2 = "UPDATE ticket_t SET date_assigned = NOW() WHERE ticket_id = $id";
     $row2=mysqli_query($db, $query2);
-    $querylog = "INSERT INTO activity_log_t(activity_log_details, logger, ticket_id) VALUES('Ticket forwarded to Technicals Supervisor - $mgrname', '$logger', '$id')";
+    $querylog = "INSERT INTO activity_log_t(activity_log_details, logger, ticket_id) VALUES('Ticket forwarded to Technicals Supervisor', '$logger', '$id')";
     $row3=mysqli_query($db, $querylog);
 
 
 }
 elseif ($category=='Access') {
-  $query3 = "SELECT user_id, CONCAT(first_name, ' ', last_name) as mgr from user_t where user_type = 'Access Group Manager'";
+  $query3 = "SELECT user_id, CONCAT(first_name, ' ', last_name) as mgr from user_t where user_type = 'Access Group Manager' AND isActive = true";
   $result = mysqli_query($db, $query3);
-  $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-  $mgrId= $row['user_id'];
-  $query2 = "UPDATE ticket_t SET it_group_manager_id= '$mgrId'  ,  date_assigned = NOW() WHERE ticket_id = $id";
+  while($row = mysqli_fetch_assoc($result)){
+    $mgr = $row['user_id'];
+    $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead, timestamp) VALUES(DEFAULT, $id,'$mgr','$ticketNo has been assigned to you',0, now())";
+
+    if (!mysqli_query($db, $notifSql))
+    {
+      die('Error' . mysqli_error($db));
+    }
+  }
+  $query2 = "UPDATE ticket_t SET date_assigned = NOW() WHERE ticket_id = $id";
   $row2=mysqli_query($db, $query2);
-  $querylog = "INSERT INTO activity_log_t(activity_log_details, logger, ticket_id) VALUES('Ticket forwarded to Access Supervisor - $mgrname', '$logger', '$id')";
+  $querylog = "INSERT INTO activity_log_t(activity_log_details, logger, ticket_id) VALUES('Ticket forwarded to Access Supervisor', '$logger', '$id')";
   $row3=mysqli_query($db, $querylog);
 }
 elseif ($category=='Network') {
   $query3 = "SELECT user_id, CONCAT(first_name, ' ', last_name) as mgr from user_t where user_type = 'Network Group Manager'";
   $result = mysqli_query($db, $query3);
-  $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-  $mgrId= $row['user_id'];
-  $query2 = "UPDATE ticket_t SET it_group_manager_id= '$mgrId' , date_assigned = NOW() WHERE ticket_id = $id";
+  while($row = mysqli_fetch_assoc($result)){
+    $mgr = $row['user_id'];
+    $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead, timestamp) VALUES(DEFAULT, $id,'$mgr','$ticketNo has been assigned to you',0, now())";
+
+    if (!mysqli_query($db, $notifSql))
+    {
+      die('Error' . mysqli_error($db));
+    }
+  }
+  $query2 = "UPDATE ticket_t SET date_assigned = NOW() WHERE ticket_id = $id";
   $row2=mysqli_query($db, $query2);
-  $querylog = "INSERT INTO activity_log_t(activity_log_details, logger, ticket_id) VALUES('Ticket forwarded to Network Supervisor - $mgrname', '$logger', '$id')";
+  $querylog = "INSERT INTO activity_log_t(activity_log_details, logger, ticket_id) VALUES('Ticket forwarded to Network Supervisor', '$logger', '$id')";
   $row3=mysqli_query($db, $querylog);
 }
 
-//date required
-$dateAssigned = "SELECT date_assigned FROM ticket_t WHERE ticket_id = $id";
-$row4 =mysqli_fetch_array(mysqli_query($db, $dateAssigned),MYSQLI_ASSOC);
-$dateAssigned = $row4['date_assigned'];
-$date = $dateAssigned;
+
 
 $sql = "SELECT resolution_time FROM sla_t WHERE id = '$severity'";
 $row3 = mysqli_fetch_array(mysqli_query($db, $sql),MYSQLI_ASSOC);
@@ -77,18 +98,6 @@ $interval = $row3['resolution_time'];
 
 $dateRequired = "UPDATE ticket_t set date_required = DATE_ADD('$date', INTERVAL $interval  HOUR) WHERE ticket_id = $id";
 $run = mysqli_query($db, $dateRequired);
-
-
-//notif table
-$sql = "SELECT ticket_number from ticket_t WHERE ticket_id = $id";
-$row3=mysqli_fetch_array(mysqli_query($db, $sql),MYSQLI_ASSOC);
-$ticketNo = $row3['ticket_number'];
-$notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead, timestamp) VALUES(DEFAULT, $id,'$mgrId','$ticketNo has been assigned to you',0, now())";
-
-if (!mysqli_query($db, $notifSql))
-{
-  die('Error' . mysqli_error($db));
-}
 
 //date required
 $datePrepared = "SELECT date_assigned FROM ticket_t WHERE ticket_id = $id";
@@ -99,19 +108,31 @@ $date = $datePrepared;
 $sql = "SELECT resolution_time FROM sla_t WHERE id = '$severity'";
 $row3 = mysqli_fetch_array(mysqli_query($db, $sql),MYSQLI_ASSOC);
 $interval = $row3['resolution_time'];
-
 function addRollover($givenDate, $addtime, $dayStart, $dayEnd, $weekDaysOnly) {
     //Break the working day start and end times into hours, minuets
     $dayStart = explode(',', $dayStart);
     $dayEnd = explode(',', $dayEnd);
-    //Create required datetime objects and hours interval
     $datetime = new DateTime($givenDate);
+    $startofday = clone $datetime;
+    $startofday->setTime($dayStart[0], $dayStart[1]);
+    $start=$startofday->format('Y-m-d H:i:s');
+    //Create required datetime objects and hours interval
+    if ($givenDate < $start) {
+        $datetime = new DateTime($givenDate);
+        $date = $datetime->format('Y-m-d');
+        $newDate = $date . ' 08:00:00';
+        $datetime = new DateTime($newDate);
+    }
+    else{
+    $datetime = new DateTime($givenDate);
+    }
     $endofday = clone $datetime;
     $endofday->setTime($dayEnd[0], $dayEnd[1]); //set end of working day time
     $interval = 'PT'.$addtime.'H';
     //Add hours onto initial given date
     $datetime->add(new DateInterval($interval));
     //if initial date + hours is after the end of working day
+
     if($datetime > $endofday)
     {
         //get the difference between the initial date + interval and the end of working day in seconds
@@ -147,14 +168,24 @@ function addRollover($givenDate, $addtime, $dayStart, $dayEnd, $weekDaysOnly) {
             }
         }
     }
+
     return $datetime;
 }
 
 date_default_timezone_set('Asia/Manila');
 
-$currentTime = date('Y-m-d H:i:s');
+$now = new DateTime(date('Y-m-d H:i:s'));
+$currentTime = $now->format('Y-m-d H:i:s');
+$day = $now->format('N');
+$time = $now->format('H:i:s');
+if ($day>=6 OR $time >'17:00:00') {
+  $ct = new DateTime(date('Y-m-d') .  '+1 weekdays');
+  $dt =$ct->format('Y-m-d');
+  $currentTime = $dt . " 08:00:00";
+}
 
-$dayStart = '8,00';
+
+$dayStart = '08,00';
 $dayEnd = '17,00';
 
 $future = addRollover($currentTime, $interval, $dayStart, $dayEnd, true);
@@ -162,16 +193,6 @@ $date_required = $future->format('Y-m-d H:i:s');
 
 $dateRequired = "UPDATE ticket_t set date_required = '$date_required' WHERE ticket_id = $id";
 $run = mysqli_query($db, $dateRequired);
-
-
-//for swal Display
-// $query4 = "SELECT ticket_category, severity_level FROM ticket_t WHERE ticket_id = $id";
-//
-// $result = mysqli_query($db, $query4);
-// $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-//
-// echo json_encode($row['ticket_category']);
-// echo json_encode($row['severity_level']);
 
 
 mysqli_close($db);

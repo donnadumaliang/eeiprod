@@ -61,6 +61,7 @@
               <li><a href="?view=sev5">SEV5</a></li>
             </ul>
             <a class="btn-search search-toggle"><span id="search"><i class="material-icons search">search</i></span>Search Here</a>
+            <a class="btn-mobile-search search-toggle"><i class="material-icons search">search</i></a>
           </div>
         </div>
         <table id="datatable" class="striped">

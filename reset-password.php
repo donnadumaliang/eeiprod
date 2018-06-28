@@ -17,8 +17,8 @@
             <img src="img/logo.png" class="login-logo">
             <span class="card-title"><h5>Update Your Password</h5></span>
           </span>
-        <form method="post">
-            <div class="input-field form-field login" data-position="right" data-delay="50" data-html="true" data-tooltip="Password Requirements:<br>
+          <form id="reset-password" name="reset-password" method="post">
+            <div class="input-field form-field login tooltipped" data-position="right" data-delay="50" data-html="true" data-tooltip="Password Requirements:<br>
                 - 8-20 characters <br>
                 - At least one uppercase letter (A-Z) <br>
                 - At least one lowercase letter (a-z) <br>
@@ -26,6 +26,7 @@
                 - At least one special character (!@#$%^*())" class="tooltipped input-field col s12">
                 <input  id="newpass" name="newpass" type="password" class="validate">
                 <label for="newpass" id="newpass">New Password</label>
+                <input  id="token" name = "token" type="hidden" value="<?php $id = $_GET['token']; echo $id?>">
             </div>
             <div class="input-field form-field login">
               <input id="confirmnewpass" name="confirmnewpass" type="password" class="validate">

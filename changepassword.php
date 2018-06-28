@@ -18,7 +18,7 @@
             <span class="card-title"><h5>Update Your Password</h5></span>
           </span>
         <form method="post">
-            <div class="input-field form-field login" data-position="right" data-delay="50" data-html="true" data-tooltip="Password Requirements:<br>
+            <div class="input-field form-field login tooltipped" data-position="right" data-delay="50" data-html="true" data-tooltip="Password Requirements:<br>
                 - 8-20 characters <br>
                 - At least one uppercase letter (A-Z) <br>
                 - At least one lowercase letter (a-z) <br>
@@ -69,21 +69,21 @@
       {
         die('Error' . mysqli_error($db));
       } else{
-        echo '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>';
+        echo '<script type="text/javascript" src="node_modules/sweetalert/dist/sweetalert.min.js"></script>';
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Success!","Your password has been updated!","success").then(function(){window.location="home.php";})';
         echo '});</script>';
       }
     }
     else{
-    echo '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>';
+    echo '<script type="text/javascript" src="node_modules/sweetalert/dist/sweetalert.min.js"></script>';
     echo '<script type="text/javascript">';
     echo 'setTimeout(function () { swal("Error!","Password does not meet the requirements!","error");';
     echo '});</script>';
     }
   }
   else{
-  echo '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>';
+  echo '<script type="text/javascript" src="node_modules/sweetalert/dist/sweetalert.min.js"></script>';
   echo '<script type="text/javascript">';
   echo 'setTimeout(function () { swal("Error!","Passwords not matching!","error");';
   echo '});</script>';

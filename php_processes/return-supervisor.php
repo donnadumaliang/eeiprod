@@ -23,7 +23,7 @@ if (!mysqli_query($db, $query2))
 }
 
 //change status from assigned back to pending
-$query3 = "UPDATE ticket_t SET ticket_status = 5 WHERE ticket_id = '$id'";
+$query3 = "UPDATE ticket_t SET ticket_status = 5, remarks='Ticket returned' WHERE ticket_id = '$id'";
 if (!mysqli_query($db, $query3))
 {
   die('Error' . mysqli_error($db));
@@ -53,24 +53,49 @@ if (!mysqli_query($db, $query4))
 // $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
 // echo json_encode($row['assignee']);
 
-
-//notif table
-
-//get supervisor for activity log
-$assignee = "SELECT u.user_id AS mgrID FROM user_t u LEFT JOIN ticket_t t on t.it_group_manager_id = u.user_id WHERE ticket_id = $id";
-$result = mysqli_query($db, $assignee);
-$row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-$mgrId= $row['mgrID'];
-
 $sql = "SELECT ticket_number from ticket_t WHERE ticket_id = $id";
 $row3=mysqli_fetch_array(mysqli_query($db, $sql),MYSQLI_ASSOC);
 $ticketNo = $row3['ticket_number'];
-$notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead,timestamp) VALUES(DEFAULT, '$id','$mgrId','Ticket No. $ticketNo has been returned',0,now())";
-if (!mysqli_query($db, $notifSql))
-{
-  die('Error' . mysqli_error($db));
-}
 
+//notif table
+$query = "SELECT ticket_category FROM ticket_t WHERE ticket_id = '$id'";
+$row=mysqli_fetch_array(mysqli_query($db, $query),MYSQLI_ASSOC);
+if ($row['ticket_category'] == 'Technicals'){
+  $result = mysqli_query($db, "SELECT user_id FROM user_t WHERE user_type='Technicals Group Manager'");
+  while($row = mysqli_fetch_assoc($result)){
+      $mgrId = $row['user_id'];
+      $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead,timestamp) VALUES(DEFAULT, '$id','$mgrId','Ticket No. $ticketNo has been returned',0,now())";
+      if (!mysqli_query($db, $notifSql))
+      {
+        die('Error' . mysqli_error($db));
+      }
+
+  }
+} elseif ($row['ticket_category'] == 'Access'){
+  $result = mysqli_query($db, "SELECT user_id FROM user_t WHERE user_type='Access Group Manager'");
+  while($row = mysqli_fetch_assoc($result)){
+      $mgrId = $row['user_id'];
+      $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead,timestamp) VALUES(DEFAULT, '$id','$mgrId','Ticket No. $ticketNo has been returned',0,now())";
+      if (!mysqli_query($db, $notifSql))
+      {
+        die('Error' . mysqli_error($db));
+      }
+
+  }
+
+}else{
+  $result = mysqli_query($db, "SELECT user_id FROM user_t WHERE user_type='Network Group Manager'");
+  while($row = mysqli_fetch_assoc($result)){
+      $mgrId = $row['user_id'];
+      $notifSql = "INSERT INTO notification_t (notification_id,ticket_id, user_id, notification_description, isRead,timestamp) VALUES(DEFAULT, '$id','$mgrId','Ticket No. $ticketNo has been returned',0,now())";
+      if (!mysqli_query($db, $notifSql))
+      {
+        die('Error' . mysqli_error($db));
+      }
+
+  }
+
+}
 
 
 mysqli_close($db);

@@ -49,9 +49,10 @@
           $sql3="UPDATE notification_t SET isSeen = 1 WHERE notification_id = '$id'";
           $result3=mysqli_query($db, $sql3); ?>
           <div class="per-notif">
-          <li>
-            <a onclick="read(<?php echo $row['notification_id']?>)"><i class="tiny material-icons">notifications</i>&nbsp;&nbsp;<?php echo $row['notification_description']?></a>
-            <span id="datediff"><?php echo $row['datediff'] ?></span>
+            <i class="tiny material-icons">notifications</i>&nbsp;&nbsp;
+          <li style="display:inline-flex">
+            <a onclick="read(<?php echo $row['notification_id']?>)"><?php echo $row['notification_description']?>
+            <br><span class="datediff-gray"><?php echo $row['datediff'] ?></span></a>
           </li>
         </div>
       <?php }

@@ -28,7 +28,7 @@
           <?php
             $id = $_SESSION['user_id'];
             $query = "SELECT COUNT(*) as count FROM ticket_t LEFT JOIN user_access_ticket_t USING (ticket_id)
-                      WHERE (user_access_ticket_t.approver = $id AND user_access_ticket_t.isApproved = true)";
+                      WHERE user_access_ticket_t.approver = $id AND ticket_t.ticket_status>=3";
             $result = mysqli_query($db,$query);
             while($row = mysqli_fetch_assoc($result)) { ?>
               <span class="badge main-count"> <?php echo $row['count'] . " tickets" ?></span>
@@ -39,10 +39,10 @@
             <a href="#!" class="breadcrumb">Approved Tickets</a>
           </div>
         </div>
-            <div class="material-table">
+        <div class="material-table" id="my-tickets">
               <div class="actions">
                 <div class="sorter">
-                  <a href="#!" class="waves-effect btn-sort">Remove Filter <i id="removefilter" class="material-icons">remove_circle</i></a>
+                  <a href="#!" class="waves-effect btn-sort">Clear <i id="removefilter" class="material-icons">remove_circle</i></a>
                   <!-- Dropdown Trigger for New Ticket -->
                   <a class="dropdown-button btn-sort" data-activates="dropdown3" data-beloworigin="true">Category<i id="sort" class="material-icons">arrow_drop_down</i></a>
                   <!-- Dropdown Structure -->
@@ -73,14 +73,13 @@
                       <th class="col-status">Status</th>
                       <th class="col-title">Title</th>
                       <th class="col-deptproj">Department/Project</th>
-                      <th class="col-accessrequest">Access Requested</th>
                       <th class="col-datecreated">Date Created</th>
                     </tr>
                   </thead>
                   <?php
                   $id = $_SESSION['user_id'];
                   $query = "SELECT * FROM ticket_t LEFT JOIN user_access_ticket_t USING (ticket_id)
-                            LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE (user_access_ticket_t.approver = $id AND user_access_ticket_t.isApproved = true)";
+                            LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE (user_access_ticket_t.approver = $id AND ticket_t.ticket_status >= 3)";
 
                   $result = mysqli_query($db,$query);?>
 
@@ -104,12 +103,13 @@
                     ?>
 
                      <tr class='clickable-row' data-href="details.php?id=<?php echo $row['ticket_id']?>">
-                       <td class="col-sevcat" id="type"><span class="<?php echo $class?>"> <?php echo $row['ticket_category'][0]?></span><p style="margin-top:25px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p></td>
+                       <td class="col-sevcat" id="type">
+                         <span class="<?php echo $class?>"> <?php echo $row['ticket_category'][0]?></span><p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p>
+                       </td>
                        <td class="col-hideticketno"> <?php echo $row['ticket_number']?>  </td>
                        <td class="col-status"> <?php echo $row['ticket_status']?>  </td>
                        <td class="col-title"> <?php echo $row['ticket_title']?>   </td>
                        <td class="col-hidedeptproj"> <?php echo $row['dept_proj'] ?>       </td>
-                       <td class="col-hideaccessrequest"> <?php echo $row['access_request'] ?>       </td>
                        <td class="col-datecreated"> <?php echo $row['date_prepared']?>  </td>
                      </tr>
                       <?php

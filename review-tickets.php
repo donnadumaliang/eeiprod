@@ -26,13 +26,13 @@
               $query = "SELECT COUNT(*) as count FROM ticket_t t WHERE t.severity_level IS NOT NULL AND t.ticket_category IS NOT NULL";
             }
             else if ($_SESSION['user_type'] == "Access Group Manager"){
-              $query = "SELECT COUNT(*) as count FROM ticket_t t WHERE t.it_group_manager_id = '".$_SESSION['user_id']."'";
+              $query = "SELECT COUNT(*) as count FROM ticket_t t WHERE t.ticket_category = 'Access'";
             }
             else if ($_SESSION['user_type'] == "Technicals Group Manager"){
-              $query = "SELECT COUNT(*) as count FROM ticket_t t WHERE t.it_group_manager_id = '".$_SESSION['user_id']."'";
+              $query = "SELECT COUNT(*) as count FROM ticket_t t LEFT JOIN sla_t sev ON sev.id = t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = t.ticket_status WHERE t.ticket_status >= 5 AND t.ticket_status < 9 AND (t.ticket_category = 'Technicals')";
             }
             else if ($_SESSION['user_type'] == "Network Group Manager"){
-              $query = "SELECT COUNT(*) as count FROM ticket_t t WHERE t.it_group_manager_id = '".$_SESSION['user_id']."'";
+              $query = "SELECT COUNT(*) as count FROM ticket_t t WHERE t.ticket_category = 'Network'";
             }
             else if ($_SESSION['user_type'] == "Technician"){
               $query = "SELECT COUNT(*) as count FROM ticket_t t WHERE t.ticket_agent_id = '".$_SESSION['user_id']."'";
@@ -55,7 +55,7 @@
           <div class="actions">
             <div class="sorter">
               <!-- Button for Removing Filter -->
-              <a href="review-tickets.php" class="waves-effect btn-sort">Remove Filter <i id="removefilter" class="material-icons">remove_circle</i></a>
+              <a href="review-tickets.php" class="waves-effect btn-sort">Clear <i id="removefilter" class="material-icons">remove_circle</i></a>
 
               <!-- Dropdown Trigger for Severity Sorter -->
               <a class="dropdown-button btn-sort" data-activates="sevlevels" data-beloworigin="true">Severity<i id="sort" class="material-icons">arrow_drop_down</i></a>
@@ -135,7 +135,7 @@
               </thead>
               <tbody>
                 <?php
-                $query = "SELECT * FROM ticket_t LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE ticket_t.it_group_manager_id = '".$_SESSION['user_id']."'";
+                $query = "SELECT * FROM ticket_t LEFT JOIN user_access_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE ticket_t.ticket_category = 'Access'";
                 $result = mysqli_query($db,$query);
                 $stat = 'none';
                 include 'templates/review-tickets-sorter.php';
@@ -167,10 +167,7 @@
                    ?>
                    <tr class='clickable-row' data-href="details.php?id=<?php echo $row['ticket_id']?>">
                      <td class="col-sevcat" id="type">
-                       <?php if ($date1<$date2) {?>
                        <span class="<?php echo $class?>"> <?php echo $row['ticket_category'][0]?></span><p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p>
-                     <?php } else{?>
-                      <i id= "warning" class="material-icons">report</i> <p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p> <?php }?>
                      </td>
                      <td class="col-ticketno"> <?php echo $row['ticket_number']?>  </td>
                      <td class="col-status"> <?php echo $row['ticket_status']?>  </td>
@@ -200,7 +197,7 @@
               </thead>
               <tbody>
                 <?php
-                $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE ticket_t.ticket_status >= 5 AND ticket_t.ticket_status < 9 AND ticket_t.it_group_manager_id = '".$_SESSION['user_id']."'";
+                $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE ticket_t.ticket_status >= 5 AND ticket_t.ticket_status < 9 AND ticket_t.ticket_category = 'Technicals'";
                 $result = mysqli_query($db,$query);
 
                 $stat = 'none';
@@ -230,10 +227,7 @@
 
                   <tr class='clickable-row' data-href="details.php?id=<?php echo $row['ticket_id']?>">
                      <td id="type">
-                        <?php if ($date1<$date2) {?>
                         <span class="<?php echo $class?>"> <?php echo $row['ticket_category'][0]?></span><p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p>
-                      <?php } else{?>
-                       <i id= "warning" class="material-icons">report</i> <p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p> <?php }?>
                       </td>
                       <td class="col-ticketno"> <?php echo $row['ticket_number']?>  </td>
                       <td class="col-status"> <?php echo $row['ticket_status']?>  </td>
@@ -264,7 +258,7 @@
               <tbody>
                   <?php
                     include 'templates/review-tickets-sorter.php';
-                    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE ticket_t.it_group_manager_id = '".$_SESSION['user_id']."'";
+                    $query = "SELECT * FROM ticket_t LEFT JOIN service_ticket_t USING (ticket_id) LEFT JOIN sla_t sev ON sev.id = ticket_t.severity_level LEFT JOIN ticket_status_t stat ON stat.status_id = ticket_t.ticket_status WHERE ticket_t.ticket_category = 'Network'";
                     $result = mysqli_query($db,$query);
 
                     $stat = 'none';
@@ -296,10 +290,7 @@
 
                        <tr class='clickable-row' data-href="details.php?id=<?php echo $row['ticket_id']?>">
                          <td id="type">
-                            <?php if ($date1<$date2) {?>
                             <span class="<?php echo $class?>"> <?php echo $row['ticket_category'][0]?></span><p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p>
-                          <?php } else{?>
-                           <i id= "warning" class="material-icons">report</i> <p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p> <?php }?>
                           </td>
                           <td class="col-ticketno"> <?php echo $row['ticket_number']?>  </td>
                           <td class="col-status"> <?php echo $row['ticket_status']?>  </td>
@@ -418,7 +409,7 @@
                       <i id= "warning" class="material-icons">report</i> <p style="margin-top:27px;margin-bottom:-5px;font-size:8pt;"><?php echo $row['severity_level']?></p> <?php }?>
                      </td>
                      <td class="col-ticketno"> <?php echo $row['ticket_number']?>  </td>
-                     <td class="hidestatus"><span class="badge new"><?php echo $row['ticket_status']?>  </span></td>
+                     <td class="hidestatus"><?php echo $row['ticket_status']?>  </td>
                      <td class="col-title"> <?php echo $row['ticket_title']?>   </td>
                      <td class="col-hidedatecreated"> <?php echo $row['date_prepared']?>  </td>
                      <td class="col-remarks"> <?php echo $row['remarks'] ?>       </td>

@@ -35,7 +35,11 @@
         <div class="col s12 m12 l12 table-header">
           <span class="table-title"><?php echo $catname?> FAQs</span>
           <div class="col s12" id="breadcrumb">
+            <?php if($_SESSION['user_type'] == 'Administrator' OR $_SESSION['user_type'] == 'Access Group Manager'){?>
+              <a href="knowledgebase.php" class="breadcrumb">Knowledge Base</a>
+            <?php } else {?>
             <a href="home.php" class="breadcrumb">Knowledge Base</a>
+          <?php } ?>
             <a href="#!" class="breadcrumb"><?php echo $catname?> FAQs</a>
           </div>
         </div>

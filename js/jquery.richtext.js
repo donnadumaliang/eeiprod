@@ -18,7 +18,7 @@
 
             // lists
             ol: true,
-            ul: false,
+            ul: true,
 
             // title
             heading: true,
